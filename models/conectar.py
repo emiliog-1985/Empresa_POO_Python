@@ -16,7 +16,8 @@ class conectar:
         for table in cursor:
             print(table)
         cursor.close()
-        self.__conn.close()
+        self.__conn.close() 
+        print("Conexion cerrada")
 # Metodo para ejecutar consultas SQL (INSERT, UPDATE, DELETE)
     def ejecutar(self, sql:str, datos=None):
         cursor = self.__conn.cursor() # Crea objeto tipo cursor
