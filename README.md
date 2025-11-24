@@ -1,1 +1,1 @@
-Proyecto de Trabajo POO empresa INACAP
+Proyecto de Trabajo Programación Orientada a Objeto Seguro
