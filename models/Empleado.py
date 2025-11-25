@@ -73,3 +73,20 @@ class Empleado:
     @email.setter
     def email(self, value):
         self.__email = value
+
+    @empleado_id.setter
+    def empleado_id(self, value):
+        self.__empleado_id = value
+        
+    @usuario_id.setter
+    def usuario_id(self, value):
+        self.__usuario_id = value
+        
+    @departamento_id.setter
+    def departamento_id(self, value):
+        self.__departamento_id = value
+        
+    @rol_id.setter
+    def rol_id(self, value):
+        self.__rol_id = value
+        
