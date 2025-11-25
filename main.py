@@ -21,7 +21,7 @@ def inicio_empresa(duration=2): # Animación de salida de la aplicación
 
 def iniciar_sesion(): # Función para iniciar sesión
     usuario = input(colorama.Fore.CYAN + 'Ingrese su usuario: ' + colorama.Style.RESET_ALL)
-    contrasena = input(colorama.Fore.CYAN + 'Ingrese su contraseña: ' + colorama.Style.RESET_ALL)
+    password = input(colorama.Fore.CYAN + 'Ingrese su contraseña: ' + colorama.Style.RESET_ALL)
     # Instanciando objeto tipo usuario
     user = Usuario(usuario=usuario, password=password)
     # Instanciamos objeto dao para usuario
