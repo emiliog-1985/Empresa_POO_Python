@@ -7,8 +7,8 @@ class UsuarioDAO:
         sql = '''
         SELECT e.nombre, e.apellido 
         FROM usuario u JOIN empleado e 
-        ON u.usuario_id = e.usuario_id;
-        WHERE nombre_usuario = %s AND hash_password = %s'''
+        ON u.usuario_id = e.usuario_id
+        WHERE nombre_usuario = %s AND hash_password = %s;'''
         datos = self.__conexion.listar_uno(sql, (self.__usuario.usuario, self.__usuario.password))
         if datos:
             self.__usuario.nombre = datos['nombre']
