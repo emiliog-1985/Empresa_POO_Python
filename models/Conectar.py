@@ -1,7 +1,7 @@
 import mysql.connector # Importa el conector de MySQL (API de Python)
 
 # Clase para la conexion a la base de datos para ejecutar consultas
-class conectar:
+class Conectar:
     def __init__(self):
         self.__conn = mysql.connector.connect(
             host='localhost',
