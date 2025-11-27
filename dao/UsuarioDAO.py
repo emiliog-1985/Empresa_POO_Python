@@ -1,5 +1,5 @@
 from models.Usuario import Usuario
-from models.Conectar import Conectar
+from models.conectar import Conectar
 
 class UsuarioDAO:
     def __init__(self, usuario:Usuario):
