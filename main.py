@@ -1,27 +1,14 @@
 import os
-import colorama
-import time
 import sys
 
 from models.Usuario import Usuario
 from dao.UsuarioDAO import UsuarioDAO
 
-symbols = ['⣾', '⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽']
 
-def inicio_empresa(duration=2): # Animación de salida de la aplicación 
-    start_time = time.time()
-    i = 0
-    while time.time() - start_time < duration:
-        sys.stdout.write('\r' + symbols[i % len(symbols)] + ' Bienvenido a la empresa POO CRUD')
-        sys.stdout.flush()
-        time.sleep(0.1)
-        i += 1
-    sys.stdout.write('\r' + ' ' * (len(symbols[0]) + len(' Bienvenido a la empresa POO CRUD')) + '\r') # Clear the line
-    sys.stdout.flush()
 
 def iniciar_sesion(): # Función para iniciar sesión
-    usuario = input(colorama.Fore.CYAN + 'Ingrese su usuario: ' + colorama.Style.RESET_ALL)
-    password = input(colorama.Fore.CYAN + 'Ingrese su contraseña: ' + colorama.Style.RESET_ALL)
+    usuario = input('Ingrese su usuario: ')
+    password = input('Ingrese su contraseña: ')
     # Instanciando objeto tipo usuario
     user = Usuario(usuario=usuario, password=password)
     # Instanciamos objeto dao para usuario
@@ -33,19 +20,18 @@ def iniciar_sesion(): # Función para iniciar sesión
 
 def menu_principal():# Menú principal de la aplicación
     while True:
-        inicio_empresa() # animacion de bienvenida
         os.system('clear') # Limpiar la pantalla
-        print(colorama.Fore.GREEN + '=== Menu Principal ===' + colorama.Style.RESET_ALL) # Menu principal
+        print('=== Menu Principal ===') # Menu principal
         print('1. Iniciar Sesión')
         print('0. Salir')
 
-        option = input(colorama.Fore.YELLOW + 'Seleccione una opción: ' + colorama.Style.RESET_ALL)
+        option = input('Seleccione una opción: ')
         
         if option == '1':
             iniciar_sesion()
         elif option == '0':
             os.system('clear')
-            print(colorama.Fore.RED + 'Saliendo del programa hasta luego...' + colorama.Style.RESET_ALL)
+            print('Saliendo del programa hasta luego...')
             break
             
 def menu_sesion(user: Usuario):
