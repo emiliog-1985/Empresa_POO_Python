@@ -40,5 +40,5 @@ class Conectar:
     def cerrar_conexion(self):
         self.__conn.close()
         
-conexion = conectar() # Crea el objeto conexion para usar en otros archivos
+conexion = Conectar() # Crea el objeto conexion para usar en otros archivos
 conexion.probar_conexion() # Prueba la conexion a la base de datos
