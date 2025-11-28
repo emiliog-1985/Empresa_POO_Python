@@ -9,7 +9,7 @@ class UsuarioDAO:
     def iniciar_sesion(self):
         sql = '''
         SELECT e.nombre, e.apellido, e.direccion, e.telefono, e.email, e.empleado_id, e.usuario_id, e.departamento_id, e.rol_id 
-        FROM usuario u JOIN empleado e 
+        FROM Usuario u JOIN Empleado e 
         ON u.usuario_id = e.usuario_id
         WHERE nombre_usuario = %s AND hash_password = %s;'''
         datos = self.__conexion.listar_uno(sql, (self.__usuario.usuario, self.__usuario.password))
@@ -25,3 +25,14 @@ class UsuarioDAO:
             self.__usuario.rol_id = datos['rol_id']
             return True
         return False
+    
+    def registrar_usuario(self):
+        sql = '''
+        INSERT INTO Usuario (nombre_usuario, hash_password)
+        VALUES (%s, %s);
+        '''
+        valores = (self.__usuario.usuario, self.__usuario.password)
+        resultado = self.__conexion.ejecutar(sql, valores)
+        return resultado > 0
+        return False 
+

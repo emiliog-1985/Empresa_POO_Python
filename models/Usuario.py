@@ -1,7 +1,9 @@
 from models.Empleado import Empleado
+from models.conectar import Conectar    
 
 class Usuario(Empleado):
-    def __init__(self, nombre = None, 
+    def __init__(self,
+                 usuario = None, 
                  apellido = None, 
                  direccion = None, 
                  telefono = None, 
@@ -10,16 +12,15 @@ class Usuario(Empleado):
                  usuario_id = None, 
                  departamento_id = None, 
                  rol_id = None,
-                 usuario:str = None,
                  password:str = None):
-        super().__init__(nombre, apellido, direccion, telefono, email, empleado_id, usuario_id, departamento_id, rol_id)
-        self.__usuario = usuario
-        self.__password = password
+        super().__init__(usuario, apellido, direccion, telefono, email, empleado_id, usuario_id, departamento_id, rol_id)
+        self.__nombre_usuario = usuario
+        self.__hash_password = password
         
     @property
     def usuario(self):
-        return self.__usuario
+        return self.__nombre_usuario
     
     @property
     def password(self):
-        return self.__password
+        return self.__hash_password

@@ -1,22 +1,33 @@
 import os
 import sys
 
-from models.Usuario import Usuario
+from models.Usuario import Usuario 
 from dao.UsuarioDAO import UsuarioDAO
 
+#funcion para iniciar sesion
+def iniciar_sesion():
+    usuario = input('Ingrese su usuario: ')
+    password = input('Ingrese su contraseña: ')
+# Instanciando objeto tipo usuario
+    user = Usuario(usuario=usuario, password=password)
+# Instanciamos objeto dao para usuario
+    dao = UsuarioDAO(user)
+    if dao.iniciar_sesion():
+        menu_sesion(user)
+    else:
+        print('Error en datos, intente nuevamente.')
 
-
-def iniciar_sesion(): # Función para iniciar sesión
+def registrar_usuario():
     usuario = input('Ingrese su usuario: ')
     password = input('Ingrese su contraseña: ')
     # Instanciando objeto tipo usuario
     user = Usuario(usuario=usuario, password=password)
     # Instanciamos objeto dao para usuario
     dao = UsuarioDAO(user)
-    if dao.iniciar_sesion():
-        menu_sesion(user)
+    if dao.registrar_usuario():
+        print('Usuario registrado con éxito.')
     else:
-        print('Error en datos, intente nuevamente.')
+        print('Error al registrar el usuario.')
 
 def menu_principal():# Menú principal de la aplicación
     while True:
@@ -42,7 +53,7 @@ def menu_sesion(user: Usuario):
         print('==== Menú principal ====')
         os.system('clear')
         print(f'Bienvenido: {user.nombre} {user.apellido}')
-        print('1.')
+        print('1. Registro de Usuario')
         print('2.')
         print('0. Cerrar sesión')
         opcion = input('Ingrese su opción:\n')
@@ -50,7 +61,8 @@ def menu_sesion(user: Usuario):
         if opcion == '0':
             print(f'Hasta luego {user.nombre} {user.apellido}')
             user = None
-            break
+        elif opcion == '1':
+            registrar_usuario()
         
         input('Presione enter para continuar...')
 
