@@ -58,12 +58,12 @@ def menu_sesion(user: Usuario):
         print('0. Cerrar sesión')
         opcion = input('Ingrese su opción:\n')
         
-        if opcion == '0':
-            print(f'Hasta luego {user.nombre} {user.apellido}')
-            user = None
-        elif opcion == '1':
+        if opcion == '1':
             registrar_usuario()
-        
+        elif opcion == '0':
+            print(f'Hasta luego {user.nombre} {user.apellido}')
+            user = None       
         input('Presione enter para continuar...')
+        break
 
 menu_principal()
