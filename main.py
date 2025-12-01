@@ -1,10 +1,48 @@
 import os
 import sys
+import mysql.connector
+from datetime import date
 
 from models.Usuario import Usuario
 from dao.UsuarioDAO import UsuarioDAO
+from models.RegistroTiempo import RegistroTiempo
+from dao.RegistroTiempoDAO import RegistroTiempoDAO
 
-
+def crear_registro_tiempo(user: Usuario):
+    print('==== Crear Registro Tiempo ====')
+    try:
+        proyecto_id = int(input('Ingrese proyecto id: \n'))
+        horas_trabajo = float(input('Ingrese horas trabajadas: \n'))
+    except ValueError:
+        print('Debe ingresar los datos como números')
+    empleado_id = user.empleado_id
+    descripcion = input('Ingrese descripcion: \n')
+    fecha = date.today()
+     # --- Validaciones del modelo (ValueError del modelo) ---
+    try:
+        registro_tiempo = RegistroTiempo(
+            empleado_id = empleado_id,
+            proyecto_id = proyecto_id,
+            horas_trabajo = horas_trabajo,
+            descripcion = descripcion,
+            fecha = fecha)
+    except ValueError as e:
+        # Aquí llegan las validaciones de Persona/Trabajador (nombre vacío, usuario inválido, etc.)
+        print(f"Error en datos del registro tiempo: {e}")
+        return
+    dao = None
+    try:
+        dao = RegistroTiempoDAO(registro_tiempo)
+        dao.crear_registro_tiempo()
+    except mysql.connector.Error as e:
+        # Excepción específica de mysql.connector
+        print(f"Error de base de datos al registrar tiempo: {e}")
+    except Exception as e:
+        # Cualquier otro error INESPERADO
+        print(f"Error inesperado al registrar tiempo: {e}")
+    finally:
+        if dao is not None:
+            dao.cerrar_dao()
 
 def iniciar_sesion(): # Función para iniciar sesión
     usuario = input('Ingrese su usuario: ')
