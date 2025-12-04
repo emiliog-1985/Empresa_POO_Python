@@ -5,8 +5,8 @@ class Conectar:
     def __init__(self):
         self.__conn = mysql.connector.connect(
             host='localhost',
-            user='sistemas',
-            password='sisT2025',
+            user='root',
+            password='',
             database='empresa'
         )
 # Metodo para consultar las tablas de la base de datos y probar la conexion a. Consultar
