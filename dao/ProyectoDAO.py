@@ -20,7 +20,7 @@ class ProyectoDAO:
     
     def crear_proyecto(self):
         sql = '''INSERT INTO proyecto (nombre_proyecto, fecha_inicio, fecha_termino, descripcion, estado)
-        VALUES (%s, %s, %s, %s. %s)'''
+        VALUES (%s, %s, %s, %s, %s)'''
         datos = (self.__proyecto.nombre_proyecto, 
                  self.__proyecto.fecha_inicio,
                  self.__proyecto.fecha_termino,

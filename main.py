@@ -23,6 +23,7 @@ def menu_proyectos():
         opcion = input('Seleccione una opción: \n')
         
         if opcion == '1':
+            os.system('cls')
             print('==== Listar proyectos ====')
             proyecto = Proyecto
             dao = ProyectoDAO(proyecto)
@@ -31,18 +32,13 @@ def menu_proyectos():
                 dao.cerrar_dao()
             
         elif opcion == '2':
-            print('==== Crear proyecto ====')
-            fecha_1 = input('Ingrese fecha de inicio YYYY-MM-DD: \n')
-            fecha_2 = input('Ingrese fecha de término YYYY-MM-DD: \n')
-            fecha_inicio = date.fromisoformat(fecha_1)
-            fecha_termino = date.fromisoformat(fecha_2)
-                    
+            crear_proyecto()
         
         elif opcion == '3':
-            pass
+            actualizar_proyecto()
         
         elif opcion == '4':
-            pass
+            eliminar_proyecto()
         
         elif opcion == '0':
             break
@@ -51,6 +47,133 @@ def menu_proyectos():
             print('Debe seleccionar una opción válida')
             
         input('Presione enter para continuar...')
+
+def eliminar_proyecto():
+    os.system('cls')
+    print('==== Eliminar proyecto ====')
+    try:
+        proyecto_id = int(input('Ingrese el id del proyecto a eliminar: \n'))
+    except ValueError:
+        print('El ID del proyecto debe ser un número entero')
+        return
+    opcion = input('¿Está seguro de eliminar este proyecto?: \n').lower()
+    if opcion == 'si':
+        proyecto = Proyecto(proyecto_id=proyecto_id)
+        dao = ProyectoDAO(proyecto)
+        try:
+            dao.eliminar_proyecto()
+        except mysql.connector.Error as e:
+            # Excepción específica de mysql.connector
+            print(f"Error de base de datos al eliminar proyecto: {e}")
+        except Exception as e:
+            # Cualquier otro error INESPERADO
+            print(f"Error inesperado al eliminar proyecto: {e}")
+        finally:
+            if dao is not None:
+                dao.cerrar_dao()
+        
+def actualizar_proyecto():
+    os.system('cls')
+    print('==== Actualizar proyecto ====')
+    try:
+        proyecto_id = int(input('Ingrese el id del proyecto: \n'))
+    except ValueError:
+        print('El ID del proyecto debe ser un número entero')
+        return
+    nombre_proyecto = input('Ingrese el nuevo nombre del proyecto: \n')
+    fecha_1 = input('Ingrese la nueva fecha de inicio YYYY-MM-DD: \n')
+    fecha_2 = input('Ingrese la nueva fecha de término YYYY-MM-DD: \n')
+    try:
+        fecha_inicio = date.fromisoformat(fecha_1)
+        fecha_termino = date.fromisoformat(fecha_2)
+    except ValueError as e:
+        print(f"Error en datos de las fechas: {e}")
+        return
+    if fecha_termino < fecha_inicio:
+        print('La fecha de inicio debe ser anterior a la fecha de término')
+        return 
+    descripcion = input('Ingrese la nueva descripción del proyecto: \n')
+    print('1. Planificación')
+    print('2. En Progreso')
+    print('3. Finalizado')
+    print('4. Pausado')
+    estado = input('Ingrese el nuevo estado del proyecto: \n')
+     # --- Validaciones del modelo (ValueError del modelo) ---
+    try:
+        proyecto = Proyecto(proyecto_id = proyecto_id,
+            nombre_proyecto = nombre_proyecto, 
+            fecha_inicio = fecha_inicio,
+            fecha_termino = fecha_termino,
+            descripcion = descripcion,
+            estado = estado)
+    except ValueError as e:
+        # Aquí llegan las validaciones de proyecto (nombre vacío, usuario inválido, etc.)
+        print(f"Error en datos del proyecto: {e}")
+        return
+
+    dao = None
+    try:
+        dao = ProyectoDAO(proyecto)
+        dao.actualizar_proyecto()
+    except mysql.connector.Error as e:
+        # Excepción específica de mysql.connector
+        print(f"Error de base de datos al actualizar proyecto: {e}")
+    except Exception as e:
+        # Cualquier otro error INESPERADO
+        print(f"Error inesperado al actualizar proyecto: {e}")
+    finally:
+        if dao is not None:
+            dao.cerrar_dao()
+        
+def crear_proyecto():
+    os.system('cls')
+    print('==== Crear proyecto ====')
+    nombre_proyecto = input('Ingrese el nombre del proyecto: \n')
+    fecha_1 = input('Ingrese fecha de inicio YYYY-MM-DD: \n')
+    fecha_2 = input('Ingrese fecha de término YYYY-MM-DD: \n')
+    try:
+        fecha_inicio = date.fromisoformat(fecha_1)
+        fecha_termino = date.fromisoformat(fecha_2)
+    except ValueError as e:
+        print(f"Error en datos de las fechas: {e}")
+        return
+    if fecha_termino < fecha_inicio:
+        print('La fecha de inicio debe ser anterior a la fecha de término')
+        return 
+    descripcion = input('Ingrese la descripción del proyecto: \n')
+    print('1. Planificación')
+    print('2. En Progreso')
+    print('3. Finalizado')
+    print('4. Pausado')
+    estado = input('Ingrese el estado del proyecto: \n')
+    
+     # --- Validaciones del modelo (ValueError del modelo) ---
+    try:
+        proyecto = Proyecto(
+            nombre_proyecto = nombre_proyecto, 
+            fecha_inicio = fecha_inicio,
+            fecha_termino = fecha_termino,
+            descripcion = descripcion,
+            estado = estado)
+    except ValueError as e:
+        # Aquí llegan las validaciones de proyecto (nombre vacío, usuario inválido, etc.)
+        print(f"Error en datos del proyecto: {e}")
+        return
+
+    dao = None
+    try:
+        dao = ProyectoDAO(proyecto)
+        dao.crear_proyecto()
+    except mysql.connector.Error as e:
+        # Excepción específica de mysql.connector
+        print(f"Error de base de datos al registrar proyecto: {e}")
+    except Exception as e:
+        # Cualquier otro error INESPERADO
+        print(f"Error inesperado al registrar proyecto: {e}")
+    finally:
+        if dao is not None:
+            dao.cerrar_dao()
+            
 
 def crear_registro_tiempo(user: Usuario):
     print('==== Crear Registro Tiempo ====')
