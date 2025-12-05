@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 24-11-2025 a las 15:44:23
+-- Tiempo de generación: 05-12-2025 a las 00:42:47
 -- Versión del servidor: 8.0.44-0ubuntu0.24.04.1
 -- Versión de PHP: 8.3.6
 
@@ -24,29 +24,29 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Departamento`
+-- Estructura de tabla para la tabla `departamento`
 --
 
-CREATE TABLE `Departamento` (
+CREATE TABLE `departamento` (
   `departamento_id` int NOT NULL,
   `nombre` varchar(100) COLLATE utf8mb3_spanish_ci NOT NULL,
   `ubicacion` varchar(150) COLLATE utf8mb3_spanish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 --
--- Volcado de datos para la tabla `Departamento`
+-- Volcado de datos para la tabla `departamento`
 --
 
-INSERT INTO `Departamento` (`departamento_id`, `nombre`, `ubicacion`) VALUES
+INSERT INTO `departamento` (`departamento_id`, `nombre`, `ubicacion`) VALUES
 (1, 'Sistemas / TI', 'Oficina Central - Servidores');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `DetalleProyecto`
+-- Estructura de tabla para la tabla `detalleproyecto`
 --
 
-CREATE TABLE `DetalleProyecto` (
+CREATE TABLE `detalleproyecto` (
   `detalle_proyecto_id` int NOT NULL,
   `empleado_id` int NOT NULL,
   `proyecto_id` int NOT NULL,
@@ -58,10 +58,10 @@ CREATE TABLE `DetalleProyecto` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Empleado`
+-- Estructura de tabla para la tabla `empleado`
 --
 
-CREATE TABLE `Empleado` (
+CREATE TABLE `empleado` (
   `empleado_id` int NOT NULL,
   `usuario_id` int DEFAULT NULL,
   `departamento_id` int NOT NULL,
@@ -75,19 +75,19 @@ CREATE TABLE `Empleado` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 --
--- Volcado de datos para la tabla `Empleado`
+-- Volcado de datos para la tabla `empleado`
 --
 
-INSERT INTO `Empleado` (`empleado_id`, `usuario_id`, `departamento_id`, `rol_id`, `codigo_empleado`, `nombre`, `apellido`, `direccion`, `telefono`, `email`) VALUES
+INSERT INTO `empleado` (`empleado_id`, `usuario_id`, `departamento_id`, `rol_id`, `codigo_empleado`, `nombre`, `apellido`, `direccion`, `telefono`, `email`) VALUES
 (1, 1, 1, 1, 'SYS-001', 'Super', 'Admin', NULL, NULL, 'admin@empresa.com');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Proyecto`
+-- Estructura de tabla para la tabla `proyecto`
 --
 
-CREATE TABLE `Proyecto` (
+CREATE TABLE `proyecto` (
   `proyecto_id` int NOT NULL,
   `nombre_proyecto` varchar(100) COLLATE utf8mb3_spanish_ci NOT NULL,
   `fecha_inicio` date DEFAULT NULL,
@@ -99,10 +99,10 @@ CREATE TABLE `Proyecto` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `RegistroTiempo`
+-- Estructura de tabla para la tabla `registrotiempo`
 --
 
-CREATE TABLE `RegistroTiempo` (
+CREATE TABLE `registrotiempo` (
   `registro_id` int NOT NULL,
   `empleado_id` int NOT NULL,
   `proyecto_id` int NOT NULL,
@@ -114,29 +114,29 @@ CREATE TABLE `RegistroTiempo` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Rol`
+-- Estructura de tabla para la tabla `rol`
 --
 
-CREATE TABLE `Rol` (
+CREATE TABLE `rol` (
   `rol_id` int NOT NULL,
   `nombre` varchar(50) COLLATE utf8mb3_spanish_ci NOT NULL,
   `descripcion` varchar(255) COLLATE utf8mb3_spanish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 --
--- Volcado de datos para la tabla `Rol`
+-- Volcado de datos para la tabla `rol`
 --
 
-INSERT INTO `Rol` (`rol_id`, `nombre`, `descripcion`) VALUES
+INSERT INTO `rol` (`rol_id`, `nombre`, `descripcion`) VALUES
 (1, 'Administrador del Sistema', 'Acceso total a todos los módulos y configuración');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Usuario`
+-- Estructura de tabla para la tabla `usuario`
 --
 
-CREATE TABLE `Usuario` (
+CREATE TABLE `usuario` (
   `usuario_id` int NOT NULL,
   `nombre_usuario` varchar(50) COLLATE utf8mb3_spanish_ci NOT NULL,
   `hash_password` varchar(255) COLLATE utf8mb3_spanish_ci NOT NULL,
@@ -144,10 +144,10 @@ CREATE TABLE `Usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 --
--- Volcado de datos para la tabla `Usuario`
+-- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `Usuario` (`usuario_id`, `nombre_usuario`, `hash_password`, `fecha_ultimo_acceso`) VALUES
+INSERT INTO `usuario` (`usuario_id`, `nombre_usuario`, `hash_password`, `fecha_ultimo_acceso`) VALUES
 (1, 'admin', '12345', '2025-11-24 12:32:44');
 
 --
@@ -155,23 +155,23 @@ INSERT INTO `Usuario` (`usuario_id`, `nombre_usuario`, `hash_password`, `fecha_u
 --
 
 --
--- Indices de la tabla `Departamento`
+-- Indices de la tabla `departamento`
 --
-ALTER TABLE `Departamento`
+ALTER TABLE `departamento`
   ADD PRIMARY KEY (`departamento_id`);
 
 --
--- Indices de la tabla `DetalleProyecto`
+-- Indices de la tabla `detalleproyecto`
 --
-ALTER TABLE `DetalleProyecto`
+ALTER TABLE `detalleproyecto`
   ADD PRIMARY KEY (`detalle_proyecto_id`),
   ADD KEY `FK_Detalle_Empleado` (`empleado_id`),
   ADD KEY `FK_Detalle_Proyecto` (`proyecto_id`);
 
 --
--- Indices de la tabla `Empleado`
+-- Indices de la tabla `empleado`
 --
-ALTER TABLE `Empleado`
+ALTER TABLE `empleado`
   ADD PRIMARY KEY (`empleado_id`),
   ADD UNIQUE KEY `unique_email` (`email`),
   ADD UNIQUE KEY `unique_usuario` (`usuario_id`),
@@ -179,29 +179,29 @@ ALTER TABLE `Empleado`
   ADD KEY `FK_Empleado_Rol` (`rol_id`);
 
 --
--- Indices de la tabla `Proyecto`
+-- Indices de la tabla `proyecto`
 --
-ALTER TABLE `Proyecto`
+ALTER TABLE `proyecto`
   ADD PRIMARY KEY (`proyecto_id`);
 
 --
--- Indices de la tabla `RegistroTiempo`
+-- Indices de la tabla `registrotiempo`
 --
-ALTER TABLE `RegistroTiempo`
+ALTER TABLE `registrotiempo`
   ADD PRIMARY KEY (`registro_id`),
   ADD KEY `FK_Registro_Empleado` (`empleado_id`),
   ADD KEY `FK_Registro_Proyecto` (`proyecto_id`);
 
 --
--- Indices de la tabla `Rol`
+-- Indices de la tabla `rol`
 --
-ALTER TABLE `Rol`
+ALTER TABLE `rol`
   ADD PRIMARY KEY (`rol_id`);
 
 --
--- Indices de la tabla `Usuario`
+-- Indices de la tabla `usuario`
 --
-ALTER TABLE `Usuario`
+ALTER TABLE `usuario`
   ADD PRIMARY KEY (`usuario_id`),
   ADD UNIQUE KEY `unique_user` (`nombre_usuario`);
 
@@ -210,45 +210,45 @@ ALTER TABLE `Usuario`
 --
 
 --
--- AUTO_INCREMENT de la tabla `Departamento`
+-- AUTO_INCREMENT de la tabla `departamento`
 --
-ALTER TABLE `Departamento`
+ALTER TABLE `departamento`
   MODIFY `departamento_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `DetalleProyecto`
+-- AUTO_INCREMENT de la tabla `detalleproyecto`
 --
-ALTER TABLE `DetalleProyecto`
+ALTER TABLE `detalleproyecto`
   MODIFY `detalle_proyecto_id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `Empleado`
+-- AUTO_INCREMENT de la tabla `empleado`
 --
-ALTER TABLE `Empleado`
+ALTER TABLE `empleado`
   MODIFY `empleado_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `Proyecto`
+-- AUTO_INCREMENT de la tabla `proyecto`
 --
-ALTER TABLE `Proyecto`
+ALTER TABLE `proyecto`
   MODIFY `proyecto_id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `RegistroTiempo`
+-- AUTO_INCREMENT de la tabla `registrotiempo`
 --
-ALTER TABLE `RegistroTiempo`
+ALTER TABLE `registrotiempo`
   MODIFY `registro_id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `Rol`
+-- AUTO_INCREMENT de la tabla `rol`
 --
-ALTER TABLE `Rol`
+ALTER TABLE `rol`
   MODIFY `rol_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `Usuario`
+-- AUTO_INCREMENT de la tabla `usuario`
 --
-ALTER TABLE `Usuario`
+ALTER TABLE `usuario`
   MODIFY `usuario_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
@@ -256,28 +256,29 @@ ALTER TABLE `Usuario`
 --
 
 --
--- Filtros para la tabla `DetalleProyecto`
+-- Filtros para la tabla `detalleproyecto`
 --
-ALTER TABLE `DetalleProyecto`
-  ADD CONSTRAINT `FK_Detalle_Empleado` FOREIGN KEY (`empleado_id`) REFERENCES `Empleado` (`empleado_id`),
-  ADD CONSTRAINT `FK_Detalle_Proyecto` FOREIGN KEY (`proyecto_id`) REFERENCES `Proyecto` (`proyecto_id`);
+ALTER TABLE `detalleproyecto`
+  ADD CONSTRAINT `FK_Detalle_Empleado` FOREIGN KEY (`empleado_id`) REFERENCES `empleado` (`empleado_id`),
+  ADD CONSTRAINT `FK_Detalle_Proyecto` FOREIGN KEY (`proyecto_id`) REFERENCES `proyecto` (`proyecto_id`);
 
 --
--- Filtros para la tabla `Empleado`
+-- Filtros para la tabla `empleado`
 --
-ALTER TABLE `Empleado`
-  ADD CONSTRAINT `FK_Empleado_Depto` FOREIGN KEY (`departamento_id`) REFERENCES `Departamento` (`departamento_id`),
-  ADD CONSTRAINT `FK_Empleado_Rol` FOREIGN KEY (`rol_id`) REFERENCES `Rol` (`rol_id`),
-  ADD CONSTRAINT `FK_Empleado_Usuario` FOREIGN KEY (`usuario_id`) REFERENCES `Usuario` (`usuario_id`);
+ALTER TABLE `empleado`
+  ADD CONSTRAINT `FK_Empleado_Depto` FOREIGN KEY (`departamento_id`) REFERENCES `departamento` (`departamento_id`),
+  ADD CONSTRAINT `FK_Empleado_Rol` FOREIGN KEY (`rol_id`) REFERENCES `rol` (`rol_id`),
+  ADD CONSTRAINT `FK_Empleado_Usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`usuario_id`);
 
 --
--- Filtros para la tabla `RegistroTiempo`
+-- Filtros para la tabla `registrotiempo`
 --
-ALTER TABLE `RegistroTiempo`
-  ADD CONSTRAINT `FK_Registro_Empleado` FOREIGN KEY (`empleado_id`) REFERENCES `Empleado` (`empleado_id`),
-  ADD CONSTRAINT `FK_Registro_Proyecto` FOREIGN KEY (`proyecto_id`) REFERENCES `Proyecto` (`proyecto_id`);
+ALTER TABLE `registrotiempo`
+  ADD CONSTRAINT `FK_Registro_Empleado` FOREIGN KEY (`empleado_id`) REFERENCES `empleado` (`empleado_id`),
+  ADD CONSTRAINT `FK_Registro_Proyecto` FOREIGN KEY (`proyecto_id`) REFERENCES `proyecto` (`proyecto_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
