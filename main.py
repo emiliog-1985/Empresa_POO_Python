@@ -1,11 +1,14 @@
 import os
 import sys
+import mysql.connector
+from datetime import date
 
 from models.Usuario import Usuario 
 from dao.UsuarioDAO import UsuarioDAO
 
-#funcion para iniciar sesion
-def iniciar_sesion():
+
+
+def iniciar_sesion(): # Función para iniciar sesión
     usuario = input('Ingrese su usuario: ')
     password = input('Ingrese su contraseña: ')
 # Instanciando objeto tipo usuario
