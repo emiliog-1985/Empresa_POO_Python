@@ -1,6 +1,8 @@
 import os
 import mysql.connector
+import datetime
 from datetime import date
+
 
 from models.Usuario import Usuario
 from dao.UsuarioDAO import UsuarioDAO
@@ -8,6 +10,8 @@ from models.RegistroTiempo import RegistroTiempo
 from dao.RegistroTiempoDAO import RegistroTiempoDAO
 from models.Proyecto import Proyecto
 from dao.ProyectoDAO import ProyectoDAO
+from models.DetalleProyecto import DetalleProyecto
+from dao.DetalleProyectoDAO import DetalleProyectoDAO
 
 def menu_proyectos():
     while True:
@@ -19,6 +23,8 @@ def menu_proyectos():
         print('2. Crear proyecto')
         print('3. Editar proyecto')
         print('4. Eliminar proyecto')
+        print('5. Asignar empleado a proyecto')
+        print('6. Desasignar empleado de proyecto')
         print('0. Atrás')
         opcion = input('Seleccione una opción: \n')
         
@@ -39,6 +45,12 @@ def menu_proyectos():
         
         elif opcion == '4':
             eliminar_proyecto()
+            
+        elif opcion == '5':
+            asignar_proyecto()
+        
+        elif opcion == '6':
+            desasignar_proyecto()
         
         elif opcion == '0':
             break
@@ -47,6 +59,69 @@ def menu_proyectos():
             print('Debe seleccionar una opción válida')
             
         input('Presione enter para continuar...')
+        
+def asignar_proyecto():
+    print('==== Asignar empleado a proyecto ====')
+    try:
+        empleado_id = int(input('Ingrese el id de empleado: \n'))
+        proyecto_id = int(input('Ingrese el id de proyecto: \n'))
+        horas_asignadas = int(input('Ingrese la cantidad de horas asignadas: \n'))
+    except ValueError:
+        print('Debe ingresar los id y las horas como números enteros')
+        return
+    fecha_asignacion = datetime.datetime.now()
+    rol_en_proyecto = input('Ingrese el rol en proyecto: \n')
+     # --- Validaciones del modelo (ValueError del modelo) ---
+    try:
+        detalle_proyecto = DetalleProyecto(
+            empleado_id = empleado_id, 
+            proyecto_id = proyecto_id,
+            fecha_asignacion = fecha_asignacion,
+            rol_en_proyecto = rol_en_proyecto,
+            horas_asignadas = horas_asignadas)
+    except ValueError as e:
+        # Aquí llegan las validaciones de proyecto (nombre vacío, usuario inválido, etc.)
+        print(f"Error en datos del empleado/proyecto: {e}")
+        return
+
+    dao = None
+    try:
+        dao = DetalleProyectoDAO(detalle_proyecto)
+        dao.asignar_proyecto()
+    except mysql.connector.Error as e:
+        # Excepción específica de mysql.connector
+        print(f"Error de base de datos al asignar empleado a proyecto: {e}")
+    except Exception as e:
+        # Cualquier otro error INESPERADO
+        print(f"Error inesperado al asignar empleado a proyecto: {e}")
+    finally:
+        if dao is not None:
+            dao.cerrar_dao()
+
+def desasignar_proyecto():
+    print('==== Desasignar empleado de proyecto ====')
+    try:
+        empleado_id = int(input('Ingrese el id de empleado: \n'))
+        proyecto_id = int(input('Ingrese el id de proyecto: \n'))
+    except ValueError:
+        print('Debe ingresar los id como números enteros')
+        return
+    opcion = input('¿Está seguro de desasignar el empleado al proyecto?').lower()
+    if opcion == 'si':
+        detalle_proyecto = DetalleProyecto(empleado_id = empleado_id, proyecto_id = proyecto_id)
+        dao = DetalleProyectoDAO(detalle_proyecto)
+        try:
+            dao.desasignar_proyecto()
+        except mysql.connector.Error as e:
+            # Excepción específica de mysql.connector
+            print(f"Error de base de datos al desasignar empleado de proyecto: {e}")
+        except Exception as e:
+            # Cualquier otro error INESPERADO
+            print(f"Error inesperado al desasignar empleado de proyecto: {e}")
+        finally:
+            if dao is not None:
+                dao.cerrar_dao()
+    
 
 def eliminar_proyecto():
     os.system('cls')
