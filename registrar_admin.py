@@ -9,7 +9,7 @@ def registrar_admin():
     nombre_usuario = input('Nombre de Usuario: ')
     hash_password = input('Ingrese Contraseña: ')
     fecha_ultimo_acceso = None
-    # Puedes cambiar el valor de fecha_ultimo_acceso si lo deseas
+
     usuario = Usuario(
         usuario_id=None,
         nombre=nombre_usuario,

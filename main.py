@@ -1,27 +1,103 @@
 import os
 import getpass
 import sys
-
 import mysql.connector
+
 from models.UsuarioEmpleado import Usuario
 from dao.UsuarioDAO import UsuarioDAO
 from dao.EmpleadoDAO import EmpleadoDAO
 from utils.generar_pdf import generar_pdf_usuarios
+from models.Conectar import Conectar # monemtaneo para pruebas
+
+def mantener_rol():
+    #funcion para mantener roles
+    os.system('clear' if os.name != "nt" else 'cls')
+    print('==== Mantenedor de roles ====')
+    print('1. Registrar nuevo rol')
+    print('2. Actualizar rol existente')
+    print('0. Salir')
+    opcion = input('Seleccione una opción: ')
+    if opcion == '1':
+        dao = UsuarioDAO()
+        nombre = input('Ingrese el nombre del rol: ')
+        descripcion = input('Ingrese la descripcion del rol: ')
+        try:
+            dao.crear_rol(nombre, descripcion)
+            print('✅ Rol registrado correctamente.')
+        except mysql.connector.Error as e:
+            print(f"❌ Error de base de datos: {e}")
+        finally:
+            dao.cerrar_dao()
+    elif opcion == '2':
+        dao = UsuarioDAO()
+        rol_id = input('Ingrese el ID del rol a actualizar: ')
+        nombre = input('Ingrese el nuevo nombre del rol: ')
+        descripcion = input('Ingrese la nueva descripcion del rol: ')
+        try:
+            dao.actualizar_rol(rol_id, nombre, descripcion)
+            print('✅ Rol actualizado correctamente.')
+        except mysql.connector.Error as e:
+            print(f"❌ Error de base de datos: {e}")
+        finally:
+            dao.cerrar_dao()
+    elif opcion == '0':
+        print('Saliendo del mantenedor de roles...')
+    else:
+        print('Opcion no valida')
+        input("⌨️ Presione Enter para continuar...")
+
+
+def mantener_departamentos():
+    #funcion para agregar y asignar departamentos a usuarios
+    print('==== Mantenedor de departamentos ====')
+    print('1. Registrar nuevo departamento')
+    print('2. Actualizar departamento existente')
+    print('0. Salir')
+    opcion = input('Seleccione una opción: ')
+    if opcion == '1':
+        dao = UsuarioDAO()
+        nombre = input('Ingrese el nombre del departamento: ')
+        ubicacion = input('Ingrese la ubicacion del departamento: ')
+        try:
+            dao.crear_departamento(nombre, ubicacion)
+            print('✅ Departamento registrado correctamente.')
+        except mysql.connector.Error as e:
+            print(f"❌ Error de base de datos: {e}")
+        finally:
+            dao.cerrar_dao()
+    elif opcion == '2':
+        dao = UsuarioDAO()
+        departamento_id = input('Ingrese el ID del departamento a actualizar: ')
+        nombre = input('Ingrese el nuevo nombre del departamento: ')
+        ubicacion = input('Ingrese la nueva ubicacion del departamento: ')
+        try:
+            dao.actualizar_departamento(departamento_id, nombre, ubicacion)
+            print('✅ Departamento actualizado correctamente.')
+        except mysql.connector.Error as e:
+            print(f"❌ Error de base de datos: {e}")
+        finally:
+            dao.cerrar_dao()
+    else:
+        print('Opcion no valida')
+        input("⌨️ Presione Enter para continuar...")
+
+
 
 def marcar_fecha_actual():
+    #funcion para obtener la fecha y hora actual
     from datetime import datetime
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-def revisar_usuario_existente(usuario):
-    dao = UsuarioDAO(Usuario())
-    sql = 'SELECT nombre_usuario FROM usuario WHERE nombre_usuario = %s'
-    datos = dao._UsuarioDAO__conexion.listar_uno(sql, (usuario,))
+def revisar_usuario_existente(nombre_usuario):
+    dao = UsuarioDAO()
+    existe = dao.existe_usuario(nombre_usuario)
     dao.cerrar_dao()
-    if datos and 'nombre_usuario' in datos:
-        return datos['nombre_usuario']
-    return
+    if not existe:
+        print('👻 El usuario no existe. Por favor, registrese primero con el administrador de Sistemas.')
+    return existe
 
 def exportar_usuarios_pdf():
+    #funcion para exportar los usuarios a un pdf
     print('==== Expotar usuarios pdf ====')
     t = Usuario()
     dao = UsuarioDAO(t)
@@ -29,76 +105,69 @@ def exportar_usuarios_pdf():
     print(lista)
     generar_pdf_usuarios(lista)
 
-def marcar_fecha_actual():
-    from datetime import datetime
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def crear_usuario():
-    print('==== Registrar Nuevo Usuario ====')
+    #funcion para crear un nuevo usuario
+    print('==== Registrar nuevo usuario ====')
     nombre_usuario = input('Nombre de Usuario: ')
-    hash_password = input('Ingrese Contraseña: ')
-    fecha_ultimo_acceso = marcar_fecha_actual()
+    hash_password = getpass.getpass('Ingrese Contraseña: ')
     
-    print('2. Administrador')
-    print('3. Trabajador')
-    rol_str = input('Ingrese rol: ')
-
-    # --- Validaciones del modelo (ValueError del modelo) ---
+    dao = UsuarioDAO()
     try:
-        usuario = Usuario(
-            nombre_usuario=nombre_usuario,
-            hash_password=hash_password,
-            fecha_ultimo_acceso=fecha_ultimo_acceso,
-        )
-    except ValueError as e:
-        # Aquí llegan las validaciones de Persona/Trabajador (nombre vacío, usuario inválido, etc.)
-        print(f"Error en datos del trabajador: {e}")
-        return
-
-    dao = None
-    try:
-        dao = UsuarioDAO(usuario)
-        dao.crear_usuario()
+        dao.crear_usuario(nombre_usuario, hash_password)
+        print('✅ Usuario registrado correctamente.')
     except mysql.connector.Error as e:
-        # Excepción específica de mysql.connector
-        print(f"Error de base de datos al registrar trabajador: {e}")
-    except Exception as e:
-        # Cualquier otro error INESPERADO
-        print(f"Error inesperado al registrar trabajador: {e}")
+        print(f"❌ Error de base de datos: {e}")
     finally:
-        if dao is not None:
-            dao.cerrar_dao()
-            
+        dao.cerrar_dao()
+
+
 def iniciar_sesion():
-    print('==== Datos de usuario ====')
-    usuario = input(str('Ingrese su usuario caracteres en minusculas :')).strip().lower()
+    #funcion para iniciar sesion
+    os.system('clear' if os.name != "nt" else 'cls')
+    print('==== 👤 Datos de usuario ====')
+    usuario = input(str('🔠 Ingrese su usuario caracteres en minusculas :')).strip().lower()
     if usuario == '': # Verificar si está vacío
-            print('El usuario no puede estar vacío.')
+            print('😕 El usuario no puede estar vacío.')
+            input("⌨️ Presione Enter para intentar de nuevo...")
             iniciar_sesion()
+            return
     elif ' ' in usuario: # Verificar espacios en blanco
-            print('El usuario no puede contener espacios.')
+            print('😕 El usuario no puede contener espacios.')
+            input("⌨️ Presione Enter para intentar de nuevo...")
             iniciar_sesion()
+            return
     elif len(usuario) < 3: # Verificar longitud mínima
-            print('El usuario debe tener al menos 3 caracteres.')
+            print('😕 El usuario debe tener al menos 3 caracteres.')
+            input("⌨️ Presione Enter para intentar de nuevo...")
             iniciar_sesion()
+            return
     elif not usuario.isalnum(): # Verificar si es alfanumérico
-            print('El usuario solo puede contener caracteres alfanuméricos.')
+            print('😕 El usuario solo puede contener caracteres alfanuméricos.')
+            input("⌨️ Presione Enter para intentar de nuevo...")
             iniciar_sesion()
+            return
     elif usuario.isdigit(): # Verificar si es solo numérico
-            print('El usuario no puede ser solo numérico.')
-            iniciar_sesion()  
-    elif len(usuario) > 20: # Verificar longitud máxima
-            print('El usuario no puede tener más de 20 caracteres.')
+            print('😕 El usuario no puede ser solo numérico.')
+            input("⌨️ Presione Enter para intentar de nuevo...")
             iniciar_sesion()
-    elif not usuario == revisar_usuario_existente(usuario): # Verificar si el usuario existe
-            print('El usuario no existe. Por favor, registrese primero con el administrador de Sistemas.')
-            iniciar_sesion()                     
-    hash_password = getpass.getpass('Ingrese su contraseña: ').strip()
-    # 1) Validaciones del modelo (ValueError)
+            return
+    elif len(usuario) > 20: # Verificar longitud máxima
+            print('😕 El usuario no puede tener más de 20 caracteres.')
+            input("⌨️ Presione Enter para intentar de nuevo...")
+            iniciar_sesion()
+            return
+    elif not revisar_usuario_existente(usuario): # Verificar si el usuario existe
+            input("⌨️ Presione Enter para intentar de nuevo...")
+            iniciar_sesion()
+            return
+
+    hash_password = getpass.getpass('🔑 Ingrese su contraseña: ').strip()
+
     try:
         usuario = Usuario(usuario_id=usuario, hash_password=hash_password)
     except ValueError as e:
-        print(f"Error en los datos ingresados: {e}")
+        print(f"⚠️ Error en los datos ingresados: {e}")
         iniciar_sesion()
     dao = None
     try:
@@ -114,29 +183,30 @@ def iniciar_sesion():
                 usuario.nombre = nombre_empleado
             else:
                 usuario.nombre = usuario.nombre_usuario
-            print(f"\nInicio de sesión exitoso. Bienvenido {usuario.nombre}!")
+            print(f"\n 👍 Inicio de sesión exitoso. 👋 Bienvenido {usuario.nombre}!")
             # Actualizar fecha_ultimo_acceso en la base de datos
             fecha_actual = marcar_fecha_actual()
             try:
                 dao.actualizar_fecha_ultimo_acceso(usuario.nombre_usuario, fecha_actual)
-                print(f"Fecha de último acceso actualizada: {fecha_actual}")
+                print(f" ⏱️ Fecha de último acceso actualizada: {fecha_actual}")
             except Exception as e:
-                print(f"Error al actualizar la fecha de último acceso: {e}")
+                print(f" ⚠️ Error al actualizar la fecha de último acceso: {e}")
             input("Presione Enter para ir al menú principal...")
             menu_principal(usuario)
         else:
-            print('Usuario o contraseña incorrectos, intente nuevamente.')
+            print('⚠️ Usuario o contraseña incorrectos, intente nuevamente.')
     except mysql.connector.Error as e:
         # Errores propiamente de MySQL (conexión, query, etc.)
-        print(f"Error de base de datos al iniciar sesión: {e}")
+        print(f" ⚠️ Error de base de datos al iniciar sesión: {e}")
     except Exception as e:
         # Cualquier cosa inesperada (bug de código, etc.)
-        print(f"Se produjo un error inesperado al iniciar sesión: {e}")
+        print(f" ⚠️ Se produjo un error inesperado al iniciar sesión: {e}")
     finally:
         if dao is not None:
             dao.cerrar_dao()
 
 def mostrar_empleados():
+    #funcion para mostrar los empleados registrados
     dao = EmpleadoDAO()
     empleados = dao.listar_empleados()
     print("\n=== Empleados registrados ===")
@@ -149,30 +219,43 @@ def mostrar_empleados():
     dao.cerrar_dao()
 
 def menu_principal(usuario: Usuario):
+    #funcion para mostrar el menu principal
     while True:
         # Limpiar pantalla para el menú  tanto en Windows como en Linux/Mac
         os.system('clear' if os.name != "nt" else 'cls')
         # Cargamos opciones
-        print('==== Menu principal ====')
-        print(f'Bienvenido: {usuario.nombre}')
+        print('==== 🏠 Menu principal ====')
+        print(f'=== 👋 Bienvenido: {usuario.nombre} =======')
         if usuario.rol_id == 2 or usuario.rol_id == 1:
-            print('1. Crear usuarios')
-            print('2. Exportar usuarios')
-        print('3. Ver datos')
-        print('0. Cerrar sesion')
+            print('= 1. Crear usuarios 👤 ➜')
+            print('= 2. Mantener roles 🔐 ➜')
+            print('= 3. Mantener departamentos 🏢 ➜')
+            print('= 4. Proyectos 📂 ➜')
+            print('= 5. Exportar usuarios PDF📄 ➜')
+            print('= 6. Ver datos empleados 👀 ➜')
+            print('========================================')
+            print('0. Cerrar sesion 🚪 ➜')
         
         opcion = input('Ingrese su opcion: ')
+        print('=======================')
         os.system('clear' if os.name != "nt" else 'cls')
         
         if opcion == '1' and (usuario.rol_id == 2 or usuario.rol_id == 1):
             crear_usuario()
+        
+        elif opcion == '2' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+            mantener_rol()
+        
+        elif opcion == '3' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+            mantener_departamentos()
 
-        if opcion == '2' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+        if opcion == '5' and (usuario.rol_id == 2 or usuario.rol_id == 1):
             exportar_usuarios_pdf()
         
-        elif opcion == '3':
-            mostrar_empleados()
-        
+
+        elif opcion == '8' and (usuario.rol_id == 1):    
+            print('Mantenedor de departamentos no implementado aún.')
+
         elif opcion == '0':
             print(f'Hasta luego {usuario.nombre}')
             usuario = None
@@ -180,14 +263,16 @@ def menu_principal(usuario: Usuario):
         
         input('Presione enter para continuar...')
     
-def menu_inicio_sesion():    
+def menu_inicio_sesion():
+    #funcion para mostrar el menu de inicio de sesion    
     while True:
         # Limpiar pantalla
         os.system('clear' if os.name != "nt" else 'cls')
         # Cargamos opciones
-        print('==== Inicio sesion ====')
-        print('1. Iniciar sesion')
-        print('0. Salir')
+        print('==== 👥 Menu Inicio sesión ====')
+        print('= 1. Iniciar sesión 🔑 ➜')
+        print('= 0. Salir 🚪 ➜')
+        print('=======================')
         
         opcion = input('Ingrese su opcion: ')
         os.system('clear' if os.name != "nt" else 'cls')

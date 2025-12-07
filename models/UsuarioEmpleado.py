@@ -86,13 +86,13 @@ class Empleado:
             raise ValueError('Nombre de usuario no puede ser mayor a 20 caracteres')
         return usuario
 
-    def hash_password(self, password, salt=None):
+    def hash_password(self, password, salt=None): 
         if salt is None:
             salt = os.urandom(16)  # Genera una sal aleatoria de 16 bytes
         else:
             salt = salt.encode('utf-8')
         password_hash = hashlib.sha256(salt + password.encode('utf-8')).hexdigest()
-        return password_hash, salt.hex()
+        return password_hash, salt.hex() # Convertir la sal a hexadecimal para almacenarla como cadena 
 
     def verify_password(self, password, stored_password_hash, salt):
         new_password_hash = hashlib.sha256(bytes.fromhex(salt) + password.encode('utf-8')).hexdigest()
