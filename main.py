@@ -293,13 +293,15 @@ def menu_principal(usuario: Usuario):
         print('🏠 Menu principal')
         print
         print(f'👋 Hola! Bienvenido: {usuario.nombre}')
-        if usuario.rol_id == 2 or usuario.rol_id == 1:
+        if usuario.rol_id == 1:
             print('========================================')
             print('1. Mantener usuarios 👤 ➜')
             print('2. Mantener empleados 🔐 ➜')
             print('3. Mantener roles 🏷️ ➜')
             print('4. Mantener departamentos 🏢 ➜')
-            print('5. Proyectos 📂 ➜')
+            print('5. Mantener proyectos 📁 ➜')
+        elif usuario.rol_id == 3:
+            print('========================================')   
             print('6. Exportar usuarios PDF📄 ➜')
             print('========================================')
             print('0. Cerrar sesion 🚪 ➜')
@@ -314,13 +316,13 @@ def menu_principal(usuario: Usuario):
         elif opcion == '2' and (usuario.rol_id == 1):
             mantener_empleado()    
         
-        elif opcion == '3' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+        elif opcion == '3' and (usuario.rol_id == 1):
             mantener_rol()
         
-        elif opcion == '4' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+        elif opcion == '4' and (usuario.rol_id == 1):
             mantener_departamentos()
 
-        elif opcion == '5' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+        elif opcion == '5' and (usuario.rol_id == 1):
             print('Proyectos no implementado aún.')    
 
         elif opcion == '6' and (usuario.rol_id == 3 or usuario.rol_id == 2 or usuario.rol_id == 1):
