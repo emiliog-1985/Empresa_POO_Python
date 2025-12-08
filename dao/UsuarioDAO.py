@@ -7,35 +7,16 @@ class UsuarioDAO:
         self.__conexion = Conectar()
         self.__usuario = usuario
 
-    def crear_rol(self, nombre, descripcion):       
-        sql = """
-        INSERT INTO rol (nombre, descripcion)
-        VALUES (%s, %s)
-        """
-        datos = (nombre, descripcion)
-        self.__conexion.ejecutar(sql, datos)
-
-    def actualizar_rol(self, rol_id, nombre, descripcion):
-        sql = "UPDATE rol SET nombre = %s, descripcion = %s WHERE rol_id = %s"
-        self.__conexion.ejecutar(sql, (nombre, descripcion, rol_id))    
-
-
-    def asignar_departamento_a_usuario(self, usuario_id, departamento_id):
-        sql = "UPDATE usuario SET departamento_id = %s WHERE usuario_id = %s"
-        self.__conexion.ejecutar(sql, (departamento_id, usuario_id))
+    def crear_usuario(self, nombre_usuario, password): # crear usuario
+        usuario_temp = Usuario(usuario_id=nombre_usuario, hash_password=password)
+        password_hash, salt = usuario_temp.hash_password(password)
     
-    def crear_departamento(self, nombre, ubicacion):
         sql = """
-        INSERT INTO departamento (nombre, ubicacion)
-        VALUES (%s, %s)
+        INSERT INTO usuario (nombre_usuario, hash_password, salt)
+        VALUES (%s, %s, %s)
         """
-        datos = (nombre, ubicacion)
+        datos = (nombre_usuario, password_hash, salt)
         self.__conexion.ejecutar(sql, datos)
-
-    def actualizar_departamento(self, departamento_id, nombre, ubicacion):
-        sql = "UPDATE departamento SET nombre= %s, ubicacion = %s WHERE departamento_id = %s"
-        self.__conexion.ejecutar(sql, (nombre, ubicacion, departamento_id))
-    
 
     def existe_usuario(self, nombre_usuario):
         sql = 'SELECT nombre_usuario FROM usuario WHERE nombre_usuario = %s'
@@ -84,20 +65,6 @@ class UsuarioDAO:
         self.__usuario.nombre_usuario = datos.get('nombre_usuario')
         return True
 
-    def crear_usuario(self, nombre_usuario, password): # crear usuario
-        usuario_temp = Usuario(nombre_usuario=nombre_usuario, hash_password=password)
-        password_hash, salt = usuario_temp.hash_password(password)
-    
-        sql = """
-        INSERT INTO usuario (nombre_usuario, hash_password, salt)
-        VALUES (%s, %s, %s)
-        """
-        datos = (nombre_usuario, password_hash, salt)
-        self.__conexion.ejecutar(sql, datos)
-
-    def cerrar_dao(self):
-        self.__conexion.cerrar_conexion()
-
     def mostrar_trabajadores(self):
         sql = '''
         SELECT p.rut, t.usuario, t.sueldo, p.nombre 
@@ -105,3 +72,6 @@ class UsuarioDAO:
         ON t.rut = p.rut'''
         return self.__conexion.listar(sql)
 
+
+    def cerrar_dao(self):
+        self.__conexion.cerrar_conexion()

@@ -6,8 +6,10 @@ import mysql.connector
 from models.UsuarioEmpleado import Usuario
 from dao.UsuarioDAO import UsuarioDAO
 from dao.EmpleadoDAO import EmpleadoDAO
+from dao.DepartamentoDAO import DepartamentoDAO
+from dao.RolDAO import RolDAO
 from utils.generar_pdf import generar_pdf_usuarios
-from models.Conectar import Conectar # monemtaneo para pruebas
+
 
 def crear_empleado():
     #funcion para crear un nuevo empleado
@@ -38,10 +40,11 @@ def mantener_rol():
     print('==== Mantenedor de roles ====')
     print('1. Registrar nuevo rol')
     print('2. Actualizar rol existente')
+    print('3. Mostrar roles disponibles')
     print('0. Salir')
     opcion = input('Seleccione una opción: ')
     if opcion == '1':
-        dao = UsuarioDAO()
+        dao = RolDAO()
         nombre = input('Ingrese el nombre del rol: ')
         descripcion = input('Ingrese la descripcion del rol: ')
         try:
@@ -52,7 +55,7 @@ def mantener_rol():
         finally:
             dao.cerrar_dao()
     elif opcion == '2':
-        dao = UsuarioDAO()
+        dao = RolDAO()
         rol_id = input('Ingrese el ID del rol a actualizar: ')
         nombre = input('Ingrese el nuevo nombre del rol: ')
         descripcion = input('Ingrese la nueva descripcion del rol: ')
@@ -63,6 +66,13 @@ def mantener_rol():
             print(f"❌ Error de base de datos: {e}")
         finally:
             dao.cerrar_dao()
+    elif opcion == '3':
+        print('Listado de roles disponibles:')
+        dao = RolDAO()
+        roles = dao.mostrar_roles()
+        for rol in roles:
+            print(f"rol_id: {rol['rol_id']}, Nombre: {rol['nombre']}, Descripcion: {rol['descripcion']}")
+        dao.cerrar_dao()
 
     elif opcion == '0':
         print('Saliendo del mantenedor de roles...')
@@ -76,10 +86,11 @@ def mantener_departamentos():
     print('==== Mantenedor de departamentos ====')
     print('1. Registrar nuevo departamento')
     print('2. Actualizar departamento existente')
+    print('3. Mostrar departamentos disponibles')
     print('0. Salir')
     opcion = input('Seleccione una opción: ')
     if opcion == '1':
-        dao = UsuarioDAO()
+        dao = DepartamentoDAO()
         nombre = input('Ingrese el nombre del departamento: ')
         ubicacion = input('Ingrese la ubicacion del departamento: ')
         try:
@@ -90,7 +101,7 @@ def mantener_departamentos():
         finally:
             dao.cerrar_dao()
     elif opcion == '2':
-        dao = UsuarioDAO()
+        dao = DepartamentoDAO()
         departamento_id = input('Ingrese el ID del departamento a actualizar: ')
         nombre = input('Ingrese el nuevo nombre del departamento: ')
         ubicacion = input('Ingrese la nueva ubicacion del departamento: ')
@@ -101,10 +112,19 @@ def mantener_departamentos():
             print(f"❌ Error de base de datos: {e}")
         finally:
             dao.cerrar_dao()
+    elif opcion == '3':
+        print('Listado de departamentos disponibles:')
+        dao = DepartamentoDAO()
+        departamentos = dao.mostrar_departamentos()
+        for dept in departamentos:
+            print(f"departamento_id: {dept['departamento_id']}, Nombre: {dept['nombre']}, Ubicacion: {dept['ubicacion']}")
+            dao.cerrar_dao()
+    elif opcion == '0':
+        print('Saliendo del mantenedor de departamentos...')
+        
     else:
         print('Opcion no valida')
         input("⌨️ Presione Enter para continuar...")
-
 
 
 def marcar_fecha_actual():
@@ -119,15 +139,6 @@ def revisar_usuario_existente(nombre_usuario):
     if not existe:
         print('👻 El usuario no existe. Por favor, registrese primero con el administrador de Sistemas.')
     return existe
-
-def exportar_usuarios_pdf():
-    #funcion para exportar los usuarios a un pdf
-    print('==== Expotar usuarios pdf ====')
-    t = Usuario()
-    dao = UsuarioDAO(t)
-    lista = dao.mostrar_usuarios()
-    print(lista)
-    generar_pdf_usuarios(lista)
 
 
 def crear_usuario():
@@ -248,24 +259,26 @@ def menu_principal(usuario: Usuario):
         # Limpiar pantalla para el menú  tanto en Windows como en Linux/Mac
         os.system('clear' if os.name != "nt" else 'cls')
         # Cargamos opciones
-        print('==== 🏠 Menu principal ====')
-        print(f'=== 👋 Bienvenido: {usuario.nombre} =======')
+        print('🏠 Menu principal')
+        print
+        print(f'👋 Hola! Bienvenido: {usuario.nombre}')
         if usuario.rol_id == 2 or usuario.rol_id == 1:
-            print('= 1. Crear usuarios 👤 ➜')
-            print('= 2. Crear Empleados 🔐 ➜')
-            print('= 3. Mantener roles 🔐 ➜')
-            print('= 4. Mantener departamentos 🏢 ➜')
-            print('= 5. Proyectos 📂 ➜')
-            print('= 6. Exportar usuarios PDF📄 ➜')
-            print('= 7. Ver datos empleados 👀 ➜')
+            print('========================================')
+            print('1. Crear usuarios 👤 ➜')
+            print('2. Crear Empleados 🔐 ➜')
+            print('3. Mantener roles 🔐 ➜')
+            print('4. Mantener departamentos 🏢 ➜')
+            print('5. Proyectos 📂 ➜')
+            print('6. Exportar usuarios PDF📄 ➜')
+            print('7. Ver datos empleados 👀 ➜')
             print('========================================')
             print('0. Cerrar sesion 🚪 ➜')
-        
-        opcion = input('Ingrese su opcion: ')
+            print ('========================================')
+        opcion = input('✅ Ingrese su opcion: ')
         print('=======================')
         os.system('clear' if os.name != "nt" else 'cls')
         
-        if opcion == '1' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+        if opcion == '1' and (usuario.rol_id == 1):
             crear_usuario()
 
         elif opcion == '2' and (usuario.rol_id == 1):
@@ -277,12 +290,15 @@ def menu_principal(usuario: Usuario):
         elif opcion == '4' and (usuario.rol_id == 2 or usuario.rol_id == 1):
             mantener_departamentos()
 
-        if opcion == '6' and (usuario.rol_id == 2 or usuario.rol_id == 1):
-            exportar_usuarios_pdf()
+        elif opcion == '5' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+            print('Proyectos no implementado aún.')    
+
+        elif opcion == '6' and (usuario.rol_id == 3 or usuario.rol_id == 2 or usuario.rol_id == 1):
+            print('Exportando usuarios a PDF no implementado aún.')
         
 
         elif opcion == '7' and (usuario.rol_id == 1):    
-            print('Mantenedor de departamentos no implementado aún.')
+            print('Mantenedor de empleados no implementado aún.')
 
         elif opcion == '0':
             print(f'Hasta luego {usuario.nombre}')
@@ -298,20 +314,20 @@ def menu_inicio_sesion():
         os.system('clear' if os.name != "nt" else 'cls')
         # Cargamos opciones
         print('==== 👥 Menu Inicio sesión ====')
-        print('= 1. Iniciar sesión 🔑 ➜')
-        print('= 0. Salir 🚪 ➜')
-        print('=======================')
+        print('==== 1. Iniciar sesión 🔑 ➜   =')
+        print('==== 0. Salir 🚪 ➜            =')
+        print('===============================')
         
-        opcion = input('Ingrese su opcion: ')
+        opcion = input('✅ Ingrese su opcion: ')
         os.system('clear' if os.name != "nt" else 'cls')
 
         
         if opcion == '1':
             iniciar_sesion()
         elif opcion == '0':
-            print('Saliendo del sistema...')
+            print('▶ Saliendo del sistema...')
             break    
-        input('Presione enter para continuar...')
+        input(' ↳ presione intro para continuar...')
     
 if __name__ == "__main__":
     try:
