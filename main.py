@@ -72,8 +72,6 @@ def mantener_empleado():
         print('Opcion no valida')
         input("⌨️ Presione Enter para continuar...") 
 
-
-
 def mantener_rol():
     #funcion para mantener roles
     os.system('clear' if os.name != "nt" else 'cls')
@@ -120,7 +118,6 @@ def mantener_rol():
         print('Opcion no valida')
         input("⌨️ Presione Enter para continuar...")
 
-
 def mantener_departamentos():
     #funcion para agregar y asignar departamentos a usuarios
     print('==== Mantenedor de departamentos ====')
@@ -166,7 +163,6 @@ def mantener_departamentos():
         print('Opcion no valida')
         input("⌨️ Presione Enter para continuar...")
 
-
 def marcar_fecha_actual():
     #funcion para obtener la fecha y hora actual
     from datetime import datetime
@@ -180,40 +176,6 @@ def revisar_usuario_existente(nombre_usuario):
         print('👻 El usuario no existe. Por favor, registrese primero con el administrador de Sistemas.')
     return existe
 
-def registrar_usuario():
-    nombre_usuario = input('Nombre de Usuario: ')
-    hash_password = getpass.getpass('Ingrese Contraseña: ')
-    dao = UsuarioDAO()
-    try:
-        dao.crear_usuario(nombre_usuario, hash_password)
-        print('✅ Usuario registrado correctamente.')
-    except mysql.connector.Error as e:
-        print(f"❌ Error de base de datos: {e}")
-    finally:
-        dao.cerrar_dao()
-
-def actualizar_usuario():
-    nombre_usuario = input('Nombre de Usuario a actualizar: ')
-    if not revisar_usuario_existente(nombre_usuario):
-        return
-    hash_password = getpass.getpass('Ingrese nueva Contraseña: ')
-    dao = UsuarioDAO()
-    try:
-        dao.actualizar_usuario(nombre_usuario, hash_password)
-        print('✅ Usuario actualizado correctamente.')
-    except mysql.connector.Error as e:
-        print(f"❌ Error de base de datos: {e}")
-    finally:
-        dao.cerrar_dao()
-
-def mostrar_usuarios():
-    dao = UsuarioDAO()
-    usuarios = dao.mostrar_usuarios()
-    print('Listado de usuarios disponibles:')
-    for user in usuarios:
-        print(f"usuario_id: {user['usuario_id']}, Nombre de usuario: {user['nombre_usuario']}")
-    dao.cerrar_dao()         
-
 def mantener_usuario():
     #funcion para crear un nuevo usuario
     print('==== Mantenedor de usuario ====')
@@ -223,20 +185,44 @@ def mantener_usuario():
     print('3. 📋 Mostrar usuarios disponibles')
     print('0. 🚪 Salir')
     opcion = input('Seleccione una opción: ')
+
     if opcion == '1':
-        registrar_usuario()
+        dao = UsuarioDAO()
+        nombre_usuario = input('Nombre de Usuario: ')
+        hash_password = getpass.getpass('Ingrese Contraseña: ')
+        try:
+            dao.crear_usuario(nombre_usuario, hash_password)
+            print('✅ Usuario registrado correctamente.')
+        except mysql.connector.Error as e:
+            print(f"❌ Error de base de datos: {e}")
+        finally:
+            dao.cerrar_dao()
+
     elif opcion == '2':
-        actualizar_usuario()
+        dao = UsuarioDAO()
+        nombre_usuario = input('Ingrese el Nombre de Usuario a actualizar: ')
+        hash_password = getpass.getpass('Ingrese la nueva Contraseña: ')
+        try:
+            dao.actualizar_usuario(nombre_usuario, hash_password)
+            print('✅ Usuario actualizado correctamente.')
+        except mysql.connector.Error as e:
+            print(f"❌ Error de base de datos: {e}")
+        finally:
+            dao.cerrar_dao()
+    
     elif opcion == '3':
-        mostrar_usuarios()
+        print('Listado de usuarios disponibles:')
+        dao = UsuarioDAO()
+        usuarios = dao.mostrar_usuarios()
+        for user in usuarios:
+            print(f"usuario_id: {user['usuario_id']}, Nombre de Usuario: {user['nombre_usuario']}")
+        dao.cerrar_dao()
+
     elif opcion == '0':
         print('Saliendo del mantenedor de usuarios...')
     else:
         print('Opcion no valida')
         input("⌨️ Presione Enter para continuar...")
-
-
-
 
 def iniciar_sesion():
     #funcion para iniciar sesion
