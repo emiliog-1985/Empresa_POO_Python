@@ -3,6 +3,14 @@ from models.Conectar import Conectar
 class EmpleadoDAO:
     def __init__(self):
         self.__conexion = Conectar()
+    
+    def crear_empleado(self, usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email):
+        sql = """
+        INSERT INTO empleado (usuario_id, departamento_id, rol_id, codigo_empleado, nombre, apellido, direccion, telefono, email)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        datos = (usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email)
+        self.__conexion.ejecutar(sql, datos)    
 
     def obtener_rol_id_por_usuario(self, nombre_usuario):
         sql = """

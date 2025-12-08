@@ -9,6 +9,29 @@ from dao.EmpleadoDAO import EmpleadoDAO
 from utils.generar_pdf import generar_pdf_usuarios
 from models.Conectar import Conectar # monemtaneo para pruebas
 
+def crear_empleado():
+    #funcion para crear un nuevo empleado
+    print('==== Registrar nuevo empleado ====')
+    usuario_id = input('ID de Usuario asociado: ')
+    departamento_id = input('ID de Departamento: ')
+    rol_id = input('ID de Rol: ')
+    codigo_empleado = input('Codigo de empleado: ')
+    nombre = input('Nombre: ')
+    apellido = input('Apellido: ')
+    direccion = input('Direccion: ')
+    telefono = input('Telefono: ')
+    email = input('Email: ')
+    dao = EmpleadoDAO()
+    try:
+        dao.crear_empleado(usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email)
+        print('✅ Empleado registrado correctamente.')
+    except mysql.connector.Error as e:
+        print(f"❌ Error de base de datos: {e}")
+    finally:
+        dao.cerrar_dao()
+
+
+
 def mantener_rol():
     #funcion para mantener roles
     os.system('clear' if os.name != "nt" else 'cls')
@@ -40,6 +63,7 @@ def mantener_rol():
             print(f"❌ Error de base de datos: {e}")
         finally:
             dao.cerrar_dao()
+
     elif opcion == '0':
         print('Saliendo del mantenedor de roles...')
     else:
@@ -228,11 +252,12 @@ def menu_principal(usuario: Usuario):
         print(f'=== 👋 Bienvenido: {usuario.nombre} =======')
         if usuario.rol_id == 2 or usuario.rol_id == 1:
             print('= 1. Crear usuarios 👤 ➜')
-            print('= 2. Mantener roles 🔐 ➜')
-            print('= 3. Mantener departamentos 🏢 ➜')
-            print('= 4. Proyectos 📂 ➜')
-            print('= 5. Exportar usuarios PDF📄 ➜')
-            print('= 6. Ver datos empleados 👀 ➜')
+            print('= 2. Crear Empleados 🔐 ➜')
+            print('= 3. Mantener roles 🔐 ➜')
+            print('= 4. Mantener departamentos 🏢 ➜')
+            print('= 5. Proyectos 📂 ➜')
+            print('= 6. Exportar usuarios PDF📄 ➜')
+            print('= 7. Ver datos empleados 👀 ➜')
             print('========================================')
             print('0. Cerrar sesion 🚪 ➜')
         
@@ -242,18 +267,21 @@ def menu_principal(usuario: Usuario):
         
         if opcion == '1' and (usuario.rol_id == 2 or usuario.rol_id == 1):
             crear_usuario()
-        
-        elif opcion == '2' and (usuario.rol_id == 2 or usuario.rol_id == 1):
-            mantener_rol()
+
+        elif opcion == '2' and (usuario.rol_id == 1):
+            crear_empleado()    
         
         elif opcion == '3' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+            mantener_rol()
+        
+        elif opcion == '4' and (usuario.rol_id == 2 or usuario.rol_id == 1):
             mantener_departamentos()
 
-        if opcion == '5' and (usuario.rol_id == 2 or usuario.rol_id == 1):
+        if opcion == '6' and (usuario.rol_id == 2 or usuario.rol_id == 1):
             exportar_usuarios_pdf()
         
 
-        elif opcion == '8' and (usuario.rol_id == 1):    
+        elif opcion == '7' and (usuario.rol_id == 1):    
             print('Mantenedor de departamentos no implementado aún.')
 
         elif opcion == '0':
@@ -285,5 +313,11 @@ def menu_inicio_sesion():
             break    
         input('Presione enter para continuar...')
     
-    
-menu_inicio_sesion()
+if __name__ == "__main__":
+    try:
+        menu_inicio_sesion()
+    except KeyboardInterrupt:
+        print('\n\n⚠️ El programa fue interrumpido por el usuario.')
+        print('👋 ¡Hasta luego!')
+    except Exception as e:
+        print(f'\n\n❌ Error inesperado: {e}')   

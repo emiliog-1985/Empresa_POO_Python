@@ -20,10 +20,6 @@ class UsuarioDAO:
         self.__conexion.ejecutar(sql, (nombre, descripcion, rol_id))    
 
 
-    def asignar_rol_a_usuario(self, usuario_id, rol_id):
-        sql = "UPDATE usuario SET rol_id = %s WHERE usuario_id = %s"
-        self.__conexion.ejecutar(sql, (rol_id, usuario_id)) 
-
     def asignar_departamento_a_usuario(self, usuario_id, departamento_id):
         sql = "UPDATE usuario SET departamento_id = %s WHERE usuario_id = %s"
         self.__conexion.ejecutar(sql, (departamento_id, usuario_id))
