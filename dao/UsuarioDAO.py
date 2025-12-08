@@ -1,5 +1,5 @@
 from models.Usuario import Usuario
-from models.conectar import Conectar
+from models.Conectar import Conectar
 
 class UsuarioDAO:
     def __init__(self, usuario:Usuario):
@@ -25,3 +25,13 @@ class UsuarioDAO:
             self.__usuario.rol_id = datos['rol_id']
             return True
         return False
+    
+    def mostrar_usuarios(self):
+        sql = '''
+        SELECT u.nombre_usuario, e.nombre, e.apellido, e.direccion, e.telefono, e.email 
+        FROM usuario u JOIN empleado e 
+        ON u.usuario_id = e.usuario_id'''
+        return self.__conexion.listar(sql)
+
+    def cerrar_dao(self):
+        self.__conexion.cerrar_conexion()

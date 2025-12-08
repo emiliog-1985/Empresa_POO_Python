@@ -1,5 +1,5 @@
 from models.DetalleProyecto import DetalleProyecto
-from models.conectar import Conectar
+from models.Conectar import Conectar
 
 class DetalleProyectoDAO:
     def __init__(self, detalle_proyecto : DetalleProyecto):

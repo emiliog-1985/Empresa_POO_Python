@@ -1,5 +1,5 @@
 from models.Proyecto import Proyecto
-from models.conectar import Conectar
+from models.Conectar import Conectar
 
 class ProyectoDAO:
     def __init__(self, proyecto:Proyecto):
@@ -52,6 +52,10 @@ class ProyectoDAO:
             print('Proyecto eliminado')
         else:
             print('Proyecto no se logró eliminar')
+            
+    def mostrar_proyectos(self):
+        sql = 'SELECT * FROM proyecto'
+        return self.__conexion.listar(sql)
     
     def cerrar_dao(self):
         self.__conexion.cerrar_conexion()

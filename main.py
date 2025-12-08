@@ -2,8 +2,7 @@ import os
 import mysql.connector
 import datetime
 from datetime import date
-
-
+from utils.generar_pdf import generar_pdf
 from models.Usuario import Usuario
 from dao.UsuarioDAO import UsuarioDAO
 from models.RegistroTiempo import RegistroTiempo
@@ -12,11 +11,58 @@ from models.Proyecto import Proyecto
 from dao.ProyectoDAO import ProyectoDAO
 from models.DetalleProyecto import DetalleProyecto
 from dao.DetalleProyectoDAO import DetalleProyectoDAO
+from models.Departamento import Departamento
+from dao.DepartamentoDAO import DepartamentoDAO
 
-def menu_proyectos():
+
+def exportar_departamentos(): # Función para exportar departamentos en formato pdf
+    os.system('clear' if os.name != "nt" else 'cls')
+    print('==== Exportar Departamentos ====')
+    departamento = Departamento
+    dao = DepartamentoDAO(departamento)
+    lista = dao.mostrar_departamentos()
+    nombre_archivo = 'reporte_departamentos.pdf'
+    generar_pdf(lista, nombre_archivo)
+    if dao is not None:
+        dao.cerrar_dao()
+
+def exportar_empleados(): # Función para exportar empleados en formato pdf
+    os.system('clear' if os.name != "nt" else 'cls')
+    print('==== Exportar Empleados ====')
+    usuario = Usuario
+    dao = UsuarioDAO(usuario)
+    lista = dao.mostrar_usuarios()
+    nombre_archivo = 'reporte_empleados.pdf'
+    generar_pdf(lista, nombre_archivo)
+    if dao is not None:
+        dao.cerrar_dao()
+
+def exportar_registro_tiempo(): # Función para exportar registros de tiempo en formato pdf
+    os.system('clear' if os.name != "nt" else 'cls')
+    print('==== Exportar Registro Tiempo ====')
+    registro_tiempo = RegistroTiempo
+    dao = RegistroTiempoDAO(registro_tiempo)
+    lista = dao.mostrar_registros()
+    nombre_archivo = 'reporte_registro_tiempo.pdf'
+    generar_pdf(lista, nombre_archivo)
+    if dao is not None:
+        dao.cerrar_dao()
+
+def exportar_proyectos(): # Función para exportar proyectos en formato pdf
+    os.system('clear' if os.name != "nt" else 'cls')
+    print('==== Exportar Proyectos ====')
+    proyecto = Proyecto
+    dao = ProyectoDAO(proyecto)
+    lista = dao.mostrar_proyectos()
+    nombre_archivo = 'reporte_proyectos.pdf'
+    generar_pdf(lista, nombre_archivo)
+    if dao is not None:
+        dao.cerrar_dao()
+
+def menu_proyectos(): # Función para el menú de proyectos
     while True:
         # Limpiar pantalla
-        os.system('cls')
+        os.system('clear' if os.name != "nt" else 'cls')
         # Cargamos opciones
         print('==== Menú Proyectos ====')
         print('1. Listar proyectos')
@@ -25,11 +71,12 @@ def menu_proyectos():
         print('4. Eliminar proyecto')
         print('5. Asignar empleado a proyecto')
         print('6. Desasignar empleado de proyecto')
+        print('7. Generar reporte de proyectos')
         print('0. Atrás')
         opcion = input('Seleccione una opción: \n')
         
         if opcion == '1':
-            os.system('cls')
+            os.system('clear' if os.name != "nt" else 'cls')
             print('==== Listar proyectos ====')
             proyecto = Proyecto
             dao = ProyectoDAO(proyecto)
@@ -51,6 +98,9 @@ def menu_proyectos():
         
         elif opcion == '6':
             desasignar_proyecto()
+            
+        elif opcion == '7':
+            exportar_proyectos()
         
         elif opcion == '0':
             break
@@ -60,7 +110,7 @@ def menu_proyectos():
             
         input('Presione enter para continuar...')
         
-def asignar_proyecto():
+def asignar_proyecto(): # Función para asignar un empleado a un proyecto
     print('==== Asignar empleado a proyecto ====')
     try:
         empleado_id = int(input('Ingrese el id de empleado: \n'))
@@ -98,7 +148,7 @@ def asignar_proyecto():
         if dao is not None:
             dao.cerrar_dao()
 
-def desasignar_proyecto():
+def desasignar_proyecto(): # Función para desasigar un empleado de un proyecto
     print('==== Desasignar empleado de proyecto ====')
     try:
         empleado_id = int(input('Ingrese el id de empleado: \n'))
@@ -122,9 +172,8 @@ def desasignar_proyecto():
             if dao is not None:
                 dao.cerrar_dao()
     
-
-def eliminar_proyecto():
-    os.system('cls')
+def eliminar_proyecto(): # Función para eliminar un proyecto
+    os.system('clear' if os.name != "nt" else 'cls')
     print('==== Eliminar proyecto ====')
     try:
         proyecto_id = int(input('Ingrese el id del proyecto a eliminar: \n'))
@@ -147,8 +196,8 @@ def eliminar_proyecto():
             if dao is not None:
                 dao.cerrar_dao()
         
-def actualizar_proyecto():
-    os.system('cls')
+def actualizar_proyecto(): # Función para actualizar un proyecto
+    os.system('clear' if os.name != "nt" else 'cls')
     print('==== Actualizar proyecto ====')
     try:
         proyecto_id = int(input('Ingrese el id del proyecto: \n'))
@@ -200,8 +249,8 @@ def actualizar_proyecto():
         if dao is not None:
             dao.cerrar_dao()
         
-def crear_proyecto():
-    os.system('cls')
+def crear_proyecto(): # Función para crear un proyecto
+    os.system('clear' if os.name != "nt" else 'cls')
     print('==== Crear proyecto ====')
     nombre_proyecto = input('Ingrese el nombre del proyecto: \n')
     fecha_1 = input('Ingrese fecha de inicio YYYY-MM-DD: \n')
@@ -249,8 +298,7 @@ def crear_proyecto():
         if dao is not None:
             dao.cerrar_dao()
             
-
-def crear_registro_tiempo(user: Usuario):
+def crear_registro_tiempo(user: Usuario): # Función para crear un registro de tiempo
     print('==== Crear Registro Tiempo ====')
     try:
         proyecto_id = int(input('Ingrese proyecto id: \n'))
@@ -286,6 +334,63 @@ def crear_registro_tiempo(user: Usuario):
         if dao is not None:
             dao.cerrar_dao()
 
+def menu_departamentos(): # Función para el menú de departamentos
+    while True:
+        # Limpiar pantalla
+        os.system('clear' if os.name != "nt" else 'cls')
+        # Cargamos opciones
+        print('==== Menú de Departamentos ====')
+        print('4. Generar informe de departamentos en pdf')
+        print('0. Atrás')
+        opcion = input('Ingrese su opción:\n')
+        if opcion == '1':
+            pass
+        
+        elif opcion == '4':
+            exportar_departamentos()
+            
+        elif opcion == '0':
+            break
+        
+        else:
+            print('Debe seleccionar una opción válida')
+        
+        input('Presione enter para continuar...')
+
+def menu_usuarios(): # Función para el menú de usuarios
+    pass
+
+def menu_empleados(): # Función para el menú de empleados
+    while True:
+        # Limpiar pantalla
+        os.system('clear' if os.name != "nt" else 'cls')
+        # Cargamos opciones
+        print('==== Menú de Empleados ====')
+        print('4. Crear registro de tiempo de trabajo')
+        print('5. Generar informe de empleados en pdf')
+        print('6. Generar informe de registro tiempo en pdf')
+        print('0. Atrás')
+        opcion = input('Ingrese su opción:\n')
+        if opcion == '1':
+            pass
+        
+        elif opcion == '4':
+            crear_registro_tiempo()
+        
+        elif opcion == '5':
+            exportar_empleados()
+            
+        elif opcion == '6':
+            exportar_registro_tiempo()
+            
+        elif opcion == '0':
+            break
+        
+        else:
+            print('Debe seleccionar una opción válida')
+            
+        input('Presione enter para continuar...')
+        
 def iniciar_sesion(): # Función para iniciar sesión
     usuario = input('Ingrese su usuario: ')
     password = input('Ingrese su contraseña: ')
@@ -294,13 +399,13 @@ def iniciar_sesion(): # Función para iniciar sesión
     # Instanciamos objeto dao para usuario
     dao = UsuarioDAO(user)
     if dao.iniciar_sesion():
-        menu_sesion(user)
+        menu_principal(user)
     else:
         print('Error en datos, intente nuevamente.')
 
-def menu_principal():# Menú principal de la aplicación
+def menu_inicio_sesion(): # Menú para iniciar sesión
     while True:
-        os.system('cls') # Limpiar la pantalla
+        os.system('clear' if os.name != "nt" else 'cls') # Limpiar la pantalla
         print('=== Menu Principal ===') # Menu principal
         print('1. Iniciar Sesión')
         print('0. Salir')
@@ -310,32 +415,39 @@ def menu_principal():# Menú principal de la aplicación
         if option == '1':
             iniciar_sesion()
         elif option == '0':
-            os.system('cls')
+            os.system('clear' if os.name != "nt" else 'cls')
             print('Saliendo del programa hasta luego...')
             break
             
-def menu_sesion(user: Usuario):
+def menu_principal(user: Usuario): # Menú principal de la aplicación
     while True:
         # Limpiar pantalla
-        os.system('cls')
+        os.system('clear' if os.name != "nt" else 'cls')
         # Cargamos opciones
         print('==== Menú principal ====')
-        os.system('cls')
         print(f'Bienvenido: {user.nombre} {user.apellido}')
-        print('1.')
-        print('2. Crear registro tiempo')
-        print('3. Menú de proyectos')
+        print('1. Menú de usuarios')
+        print('2. Menú de empleados')
+        print('3. Menú de roles')
+        print('4. Menú de departamentos')
+        print('5. Menú de proyectos')
         print('0. Cerrar sesión')
         opcion = input('Ingrese su opción:\n')
         
         if opcion == '1':
-            pass
-        
-        elif opcion == '3':
-            menu_proyectos()
+            menu_usuarios()
         
         elif opcion == '2':
-            crear_registro_tiempo(user)
+            menu_empleados()
+        
+        elif opcion == '3':
+            pass
+        
+        elif opcion == '4':
+            menu_departamentos()
+            
+        elif opcion == '5':
+            menu_proyectos()
             
         elif opcion == '0':
             print(f'Hasta luego {user.nombre} {user.apellido}')
@@ -344,4 +456,4 @@ def menu_sesion(user: Usuario):
         
         input('Presione enter para continuar...')
 
-menu_principal()
+menu_inicio_sesion()
