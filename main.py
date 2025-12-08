@@ -11,7 +11,7 @@ from dao.RolDAO import RolDAO
 from utils.generar_pdf import generar_pdf_usuarios
 
 
-def crear_empleado():
+def mantener_empleado():
     #funcion para mantener empleados
     os.system('clear' if os.name != "nt" else 'cls')
     print('==== Mantenedor de empleados ====')
@@ -349,7 +349,7 @@ def menu_principal(usuario: Usuario):
             mantener_usuario()
 
         elif opcion == '2' and (usuario.rol_id == 1):
-            crear_empleado()    
+            mantener_empleado()    
         
         elif opcion == '3' and (usuario.rol_id == 2 or usuario.rol_id == 1):
             mantener_rol()
