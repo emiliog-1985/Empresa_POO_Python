@@ -13,7 +13,7 @@ from utils.generar_pdf import generar_pdf_usuarios
 
 def mantener_empleado():
     #funcion para mantener empleados
-    os.system('clear' if os.name != "nt" else 'cls')
+    os.system('clear' if os.name != "nt" else 'cls') #limpiar pantalla 
     print('==== Mantenedor de empleados ====')
     print('1. 👥 Crear nuevo empleado')
     print('2. 🔄 Actualizar empleado existente')
