@@ -12,25 +12,65 @@ from utils.generar_pdf import generar_pdf_usuarios
 
 
 def crear_empleado():
-    #funcion para crear un nuevo empleado
-    print('==== Registrar nuevo empleado ====')
-    usuario_id = input('ID de Usuario asociado: ')
-    departamento_id = input('ID de Departamento: ')
-    rol_id = input('ID de Rol: ')
-    codigo_empleado = input('Codigo de empleado: ')
-    nombre = input('Nombre: ')
-    apellido = input('Apellido: ')
-    direccion = input('Direccion: ')
-    telefono = input('Telefono: ')
-    email = input('Email: ')
-    dao = EmpleadoDAO()
-    try:
-        dao.crear_empleado(usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email)
-        print('✅ Empleado registrado correctamente.')
-    except mysql.connector.Error as e:
-        print(f"❌ Error de base de datos: {e}")
-    finally:
+    #funcion para mantener empleados
+    os.system('clear' if os.name != "nt" else 'cls')
+    print('==== Mantenedor de empleados ====')
+    print('1. 👥 Crear nuevo empleado')
+    print('2. 🔄 Actualizar empleado existente')
+    print('3. 📋 Mostrar empleados registrados')
+    print('0. 🚪 Salir')
+    
+    opcion = input('Seleccione una opción: ')
+    
+    if opcion == '1':
+        dao = EmpleadoDAO()
+        print('==== Ingrese los datos del nuevo empleado ====')
+        usuario_id = input('ID de Usuario asociado: ')
+        departamento_id = input('ID de Departamento: ')
+        rol_id = input('ID de Rol: ')
+        codigo_empleado = input('Codigo de empleado: ')
+        nombre = input('Nombre: ')
+        apellido = input('Apellido: ')
+        direccion = input('Direccion: ')
+        telefono = input('Telefono: ')
+        email = input('Email: ')
+        try:
+            dao.crear_empleado(usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email)
+            print('✅ Empleado registrado correctamente.')
+        except mysql.connector.Error as e:
+            print(f"❌ Error de base de datos: {e}")
+        finally:
+            dao.cerrar_dao()
+
+    elif opcion == '2':
+        dao = EmpleadoDAO()
+        empleado_id = input('Ingrese el ID del empleado a actualizar: ')
+        nombre = input('Ingrese el nuevo nombre del empleado: ')
+        apellido = input('Ingrese el nuevo apellido del empleado: ')
+        direccion = input('Ingrese la nueva direccion del empleado: ')
+        telefono = input('Ingrese el nuevo telefono del empleado: ')
+        email = input('Ingrese el nuevo email del empleado: ')
+        try:
+            dao.actualizar_empleado(empleado_id, nombre, apellido, direccion, telefono, email)
+            print('✅ Empleado actualizado correctamente.')
+        except mysql.connector.Error as e:
+            print(f"❌ Error de base de datos: {e}")
+        finally:
+            dao.cerrar_dao()
+
+    elif opcion == '3':
+        dao = EmpleadoDAO()
+        empleados = dao.mostrar_empleados()
+        print('Listado de empleados registrados:')
+        for emp in empleados:
+            print(f"empleado_id: {emp['empleado_id']}, Nombre: {emp['nombre']}, Apellido: {emp['apellido']}, Direccion: {emp['direccion']}, Telefono: {emp['telefono']}, Email: {emp['email']}")
         dao.cerrar_dao()
+
+    elif opcion == '0':
+        print('Saliendo del mantenedor de empleados...')
+    else:
+        print('Opcion no valida')
+        input("⌨️ Presione Enter para continuar...") 
 
 
 
@@ -38,10 +78,10 @@ def mantener_rol():
     #funcion para mantener roles
     os.system('clear' if os.name != "nt" else 'cls')
     print('==== Mantenedor de roles ====')
-    print('1. Registrar nuevo rol')
-    print('2. Actualizar rol existente')
-    print('3. Mostrar roles disponibles')
-    print('0. Salir')
+    print('1. 👤 Registrar nuevo rol')
+    print('2. 🔄 Actualizar rol existente')
+    print('3. 📋 Mostrar roles disponibles')
+    print('0. 🚪 Salir')
     opcion = input('Seleccione una opción: ')
     if opcion == '1':
         dao = RolDAO()
@@ -140,13 +180,9 @@ def revisar_usuario_existente(nombre_usuario):
         print('👻 El usuario no existe. Por favor, registrese primero con el administrador de Sistemas.')
     return existe
 
-
-def crear_usuario():
-    #funcion para crear un nuevo usuario
-    print('==== Registrar nuevo usuario ====')
+def registrar_usuario():
     nombre_usuario = input('Nombre de Usuario: ')
     hash_password = getpass.getpass('Ingrese Contraseña: ')
-    
     dao = UsuarioDAO()
     try:
         dao.crear_usuario(nombre_usuario, hash_password)
@@ -155,6 +191,51 @@ def crear_usuario():
         print(f"❌ Error de base de datos: {e}")
     finally:
         dao.cerrar_dao()
+
+def actualizar_usuario():
+    nombre_usuario = input('Nombre de Usuario a actualizar: ')
+    if not revisar_usuario_existente(nombre_usuario):
+        return
+    hash_password = getpass.getpass('Ingrese nueva Contraseña: ')
+    dao = UsuarioDAO()
+    try:
+        dao.actualizar_usuario(nombre_usuario, hash_password)
+        print('✅ Usuario actualizado correctamente.')
+    except mysql.connector.Error as e:
+        print(f"❌ Error de base de datos: {e}")
+    finally:
+        dao.cerrar_dao()
+
+def mostrar_usuarios():
+    dao = UsuarioDAO()
+    usuarios = dao.mostrar_usuarios()
+    print('Listado de usuarios disponibles:')
+    for user in usuarios:
+        print(f"usuario_id: {user['usuario_id']}, Nombre de usuario: {user['nombre_usuario']}")
+    dao.cerrar_dao()         
+
+def mantener_usuario():
+    #funcion para crear un nuevo usuario
+    print('==== Mantenedor de usuario ====')
+    os.system('clear' if os.name != "nt" else 'cls')
+    print('1. 👤 Registrar nuevo usuario')
+    print('2. 🔄 Actualizar contraseña de usuario existente')
+    print('3. 📋 Mostrar usuarios disponibles')
+    print('0. 🚪 Salir')
+    opcion = input('Seleccione una opción: ')
+    if opcion == '1':
+        registrar_usuario()
+    elif opcion == '2':
+        actualizar_usuario()
+    elif opcion == '3':
+        mostrar_usuarios()
+    elif opcion == '0':
+        print('Saliendo del mantenedor de usuarios...')
+    else:
+        print('Opcion no valida')
+        input("⌨️ Presione Enter para continuar...")
+
+
 
 
 def iniciar_sesion():
@@ -240,19 +321,6 @@ def iniciar_sesion():
         if dao is not None:
             dao.cerrar_dao()
 
-def mostrar_empleados():
-    #funcion para mostrar los empleados registrados
-    dao = EmpleadoDAO()
-    empleados = dao.listar_empleados()
-    print("\n=== Empleados registrados ===")
-    if empleados:
-        for e in empleados:
-            print(f"ID: {e['empleado_id']} | Usuario: {e['nombre_usuario']} | Departamento: {e['departamento']} ({e['ubicacion']}) | Rol: {e['rol']} ({e['descripcion']})")
-            print("-----------------------")
-    else:
-        print("No hay empleados registrados.")
-    dao.cerrar_dao()
-
 def menu_principal(usuario: Usuario):
     #funcion para mostrar el menu principal
     while True:
@@ -264,13 +332,12 @@ def menu_principal(usuario: Usuario):
         print(f'👋 Hola! Bienvenido: {usuario.nombre}')
         if usuario.rol_id == 2 or usuario.rol_id == 1:
             print('========================================')
-            print('1. Crear usuarios 👤 ➜')
-            print('2. Crear Empleados 🔐 ➜')
-            print('3. Mantener roles 🔐 ➜')
+            print('1. Mantener usuarios 👤 ➜')
+            print('2. Mantener empleados 🔐 ➜')
+            print('3. Mantener roles 🏷️ ➜')
             print('4. Mantener departamentos 🏢 ➜')
             print('5. Proyectos 📂 ➜')
             print('6. Exportar usuarios PDF📄 ➜')
-            print('7. Ver datos empleados 👀 ➜')
             print('========================================')
             print('0. Cerrar sesion 🚪 ➜')
             print ('========================================')
@@ -279,7 +346,7 @@ def menu_principal(usuario: Usuario):
         os.system('clear' if os.name != "nt" else 'cls')
         
         if opcion == '1' and (usuario.rol_id == 1):
-            crear_usuario()
+            mantener_usuario()
 
         elif opcion == '2' and (usuario.rol_id == 1):
             crear_empleado()    
@@ -296,9 +363,6 @@ def menu_principal(usuario: Usuario):
         elif opcion == '6' and (usuario.rol_id == 3 or usuario.rol_id == 2 or usuario.rol_id == 1):
             print('Exportando usuarios a PDF no implementado aún.')
         
-
-        elif opcion == '7' and (usuario.rol_id == 1):    
-            print('Mantenedor de empleados no implementado aún.')
 
         elif opcion == '0':
             print(f'Hasta luego {usuario.nombre}')

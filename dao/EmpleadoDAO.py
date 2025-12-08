@@ -12,6 +12,10 @@ class EmpleadoDAO:
         datos = (usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email)
         self.__conexion.ejecutar(sql, datos)    
 
+    def actualizar_empleado(self, empleado_id, nombre, apellido, direccion, telefono, email):
+        sql = "UPDATE empleado SET nombre = %s, apellido = %s, direccion = %s, telefono = %s, email = %s WHERE empleado_id = %s"
+        self.__conexion.ejecutar(sql, (nombre, apellido, direccion, telefono, email, empleado_id))
+    
     def obtener_rol_id_por_usuario(self, nombre_usuario):
         sql = """
             SELECT r.rol_id
@@ -46,6 +50,11 @@ class EmpleadoDAO:
         if datos and 'nombre' in datos:
             return datos['nombre']
         return None
+
+    def mostrar_empleados(self):
+        sql = 'SELECT empleado_id, nombre, apellido, direccion, telefono, email FROM empleado'
+        return self.__conexion.listar(sql)
+
 
     def cerrar_dao(self):
         self.__conexion.cerrar_conexion()

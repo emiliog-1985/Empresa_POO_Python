@@ -18,6 +18,14 @@ class UsuarioDAO:
         datos = (nombre_usuario, password_hash, salt)
         self.__conexion.ejecutar(sql, datos)
 
+    def actualizar_usuario(self, nombre_usuario, password): # actualizar usuario
+        usuario_temp = Usuario(usuario_id=nombre_usuario, hash_password=password)
+        password_hash, salt = usuario_temp.hash_password(password)
+    
+        sql = "UPDATE usuario SET hash_password = %s, salt = %s WHERE nombre_usuario = %s"
+        self.__conexion.ejecutar(sql, (password_hash, salt, nombre_usuario))
+
+
     def existe_usuario(self, nombre_usuario):
         sql = 'SELECT nombre_usuario FROM usuario WHERE nombre_usuario = %s'
         datos = self.__conexion.listar_uno(sql, (nombre_usuario,))
@@ -33,10 +41,6 @@ class UsuarioDAO:
         sql = 'SELECT departamento_id, nombre_departamento FROM departamento'
         return self.__conexion.listar(sql)
     
-    def mostrar_roles(self):
-        sql = 'SELECT rol_id, nombre FROM rol'
-        return self.__conexion.listar(sql)
-
     def actualizar_fecha_ultimo_acceso(self, nombre_usuario, fecha_actual):
         sql = "UPDATE usuario SET fecha_ultimo_acceso = %s WHERE nombre_usuario = %s"
         self.__conexion.ejecutar(sql, (fecha_actual, nombre_usuario))
