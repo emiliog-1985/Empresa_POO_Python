@@ -229,38 +229,14 @@ def iniciar_sesion():
     os.system('clear' if os.name != "nt" else 'cls')
     print('==== 👤 Datos de usuario ====')
     usuario = input(str('🔠 Ingrese su usuario caracteres en minusculas :')).strip().lower()
-    if usuario == '': # Verificar si está vacío
-            print('😕 El usuario no puede estar vacío.')
-            input("⌨️ Presione Enter para intentar de nuevo...")
-            iniciar_sesion()
-            return
-    elif ' ' in usuario: # Verificar espacios en blanco
-            print('😕 El usuario no puede contener espacios.')
-            input("⌨️ Presione Enter para intentar de nuevo...")
-            iniciar_sesion()
-            return
-    elif len(usuario) < 3: # Verificar longitud mínima
-            print('😕 El usuario debe tener al menos 3 caracteres.')
-            input("⌨️ Presione Enter para intentar de nuevo...")
-            iniciar_sesion()
-            return
-    elif not usuario.isalnum(): # Verificar si es alfanumérico
-            print('😕 El usuario solo puede contener caracteres alfanuméricos.')
-            input("⌨️ Presione Enter para intentar de nuevo...")
-            iniciar_sesion()
-            return
-    elif usuario.isdigit(): # Verificar si es solo numérico
-            print('😕 El usuario no puede ser solo numérico.')
-            input("⌨️ Presione Enter para intentar de nuevo...")
-            iniciar_sesion()
-            return
-    elif len(usuario) > 20: # Verificar longitud máxima
-            print('😕 El usuario no puede tener más de 20 caracteres.')
+    if usuario == '' or usuario is None or usuario == ' ' or usuario.isspace() or len(usuario) < 3 or not usuario.isalnum() or usuario.isdigit() or len(usuario) > 20:
+    # Verificar si el usuario está vacío, contiene solo espacios, o es None, verificar longitud mínima y máxima, si es alfanumérico y no solo numérico
+            print('😕 ingreso un usuario invalido no cumple con los requisitos, intente nuevamente.')
             input("⌨️ Presione Enter para intentar de nuevo...")
             iniciar_sesion()
             return
     elif not revisar_usuario_existente(usuario): # Verificar si el usuario existe
-            input("⌨️ Presione Enter para intentar de nuevo...")
+            input(" ➡️ Presione Enter")
             iniciar_sesion()
             return
 
@@ -271,6 +247,7 @@ def iniciar_sesion():
     except ValueError as e:
         print(f"⚠️ Error en los datos ingresados: {e}")
         iniciar_sesion()
+
     dao = None
     try:
         dao = UsuarioDAO(usuario)
@@ -363,7 +340,7 @@ def menu_inicio_sesion():
         # Limpiar pantalla
         os.system('clear' if os.name != "nt" else 'cls')
         # Cargamos opciones
-        print('==== 👥 Menu Inicio sesión ====')
+        print('==== 👥 Menu inicio sesión ====')
         print('==== 1. Iniciar sesión 🔑 ➜   =')
         print('==== 0. Salir 🚪 ➜            =')
         print('===============================')
@@ -375,8 +352,11 @@ def menu_inicio_sesion():
         if opcion == '1':
             iniciar_sesion()
         elif opcion == '0':
-            print('▶ Saliendo del sistema...')
-            break    
+            print('=============================')
+            print('======👋 ¡Hasta luego! ======')
+            print('==Saliendo del sistema...====')
+            print('=============================')
+            break     
         input(' ↳ presione intro para continuar...')
     
 if __name__ == "__main__":
