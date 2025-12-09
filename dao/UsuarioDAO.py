@@ -7,6 +7,12 @@ class UsuarioDAO:
         self.__conexion = Conectar()
         self.__usuario = usuario
 
+
+    def eliminar_usuario(self, nombre_usuario):
+    # eliminar usuario
+        sql = "DELETE FROM usuario WHERE nombre_usuario = %s"
+        self.__conexion.ejecutar(sql, (nombre_usuario,))
+
     def crear_usuario(self, nombre_usuario, password): # crear usuario
         usuario_temp = Usuario(usuario_id=nombre_usuario, hash_password=password)
         password_hash, salt = usuario_temp.hash_password(password)

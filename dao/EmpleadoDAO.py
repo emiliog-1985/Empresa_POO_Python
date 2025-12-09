@@ -3,7 +3,12 @@ from models.Conectar import Conectar
 class EmpleadoDAO:
     def __init__(self):
         self.__conexion = Conectar()
-    
+        
+    def eliminar_empleado(self, empleado_id):
+        sql = "DELETE FROM empleado WHERE empleado_id = %s"
+        self.__conexion.ejecutar(sql, (empleado_id,))
+
+
     def crear_empleado(self, usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email):
         sql = """
         INSERT INTO empleado (usuario_id, departamento_id, rol_id, codigo_empleado, nombre, apellido, direccion, telefono, email)

@@ -26,6 +26,9 @@ def mantener_empleado():
         dao = EmpleadoDAO()
         print('==== Ingrese los datos del nuevo empleado ====')
         usuario_id = input('ID de Usuario asociado: ')
+        if usuario_id.strip() == "" or usuario_id is None:
+            print('❌ El ID de usuario no puede estar vacío.')
+            return
         departamento_id = input('ID de Departamento: ')
         rol_id = input('ID de Rol: ')
         codigo_empleado = input('Codigo de empleado: ')
@@ -183,6 +186,7 @@ def mantener_usuario():
     print('1. 👤 Registrar nuevo usuario')
     print('2. 🔄 Actualizar contraseña de usuario existente')
     print('3. 📋 Mostrar usuarios disponibles')
+    print('4. 🗑️  Eliminar usuario existente')
     print('0. 🚪 Salir')
     opcion = input('Seleccione una opción: ')
 
@@ -217,6 +221,22 @@ def mantener_usuario():
         for user in usuarios:
             print(f"usuario_id: {user['usuario_id']}, Nombre de Usuario: {user['nombre_usuario']}")
         dao.cerrar_dao()
+
+    elif opcion == '4':
+        dao = UsuarioDAO()
+        nombre_usuario = input('Ingrese el Nombre de Usuario a eliminar: ')
+        print(f'⚠️ Advertencia: Está a punto de eliminar el usuario "{nombre_usuario}". Recuede haberlo eliminado de ser empleado. Esta acción es irreversible.')
+        confirmacion = input(f'¿Está seguro que desea eliminar el usuario "{nombre_usuario}"? Esta acción no se puede deshacer. (s/n): ')
+        if confirmacion.lower() == 's': 
+            try:
+                dao.eliminar_usuario(nombre_usuario)
+                print('✅ Usuario eliminado correctamente.')
+            except mysql.connector.Error as e:
+                print(f"❌ Error de base de datos: {e}")
+            finally:
+                dao.cerrar_dao()
+        else:
+            print('Operación de eliminación cancelada.')    
 
     elif opcion == '0':
         print('Saliendo del mantenedor de usuarios...')
