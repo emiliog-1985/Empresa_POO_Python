@@ -222,7 +222,7 @@ def mantener_usuario():
         dao = UsuarioDAO()
         usuarios = dao.mostrar_usuarios()
         for user in usuarios:
-            print(f"usuario_id: {user['usuario_id']}, Nombre de Usuario: {user['nombre_usuario']}")
+            print(f"usuario_id: {user['usuario_id']} ❯❯❯❯ Nombre de Usuario: {user['nombre_usuario']} ❯❯❯❯ Ultimo acceso: {user['fecha_ultimo_acceso']}")
         dao.cerrar_dao()
 
     elif opcion == '4':

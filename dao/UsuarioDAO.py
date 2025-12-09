@@ -40,7 +40,7 @@ class UsuarioDAO:
         return False
 
     def mostrar_usuarios(self):
-        sql = 'SELECT usuario_id, nombre_usuario FROM usuario'
+        sql = 'SELECT usuario_id, nombre_usuario, fecha_ultimo_acceso FROM usuario'
         return self.__conexion.listar(sql)
     
     def mostrar_departamentos(self):
@@ -74,14 +74,6 @@ class UsuarioDAO:
         self.__usuario.usuario_id = datos.get('usuario_id')
         self.__usuario.nombre_usuario = datos.get('nombre_usuario')
         return True
-
-    def mostrar_trabajadores(self):
-        sql = '''
-        SELECT p.rut, t.usuario, t.sueldo, p.nombre 
-        FROM trabajador t JOIN persona p
-        ON t.rut = p.rut'''
-        return self.__conexion.listar(sql)
-
 
     def cerrar_dao(self):
         self.__conexion.cerrar_conexion()
