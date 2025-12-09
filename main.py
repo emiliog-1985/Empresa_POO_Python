@@ -225,6 +225,7 @@ def mantener_usuario():
         input("⌨️ Presione Enter para continuar...")
 
 def iniciar_sesion():
+
     #funcion para iniciar sesion
     os.system('clear' if os.name != "nt" else 'cls')
     print('==== 👤 Datos de usuario ====')
@@ -300,10 +301,12 @@ def menu_principal(usuario: Usuario):
             print('3. Mantener roles 🏷️ ➜')
             print('4. Mantener departamentos 🏢 ➜')
             print('5. Mantener proyectos 📁 ➜')
-        elif usuario.rol_id == 3:
+            print('6. Exportar usuarios PDF📄 ➜')
+            print('0. Cerrar sesion 🚪➜')
+            print ('========================================')
+        elif usuario.rol_id == 3 or usuario.rol_id == 2 or usuario.rol_id == 1:
             print('========================================')   
             print('6. Exportar usuarios PDF📄 ➜')
-            print('========================================')
             print('0. Cerrar sesion 🚪 ➜')
             print ('========================================')
         opcion = input('✅ Ingrese su opcion: ')
