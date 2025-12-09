@@ -193,6 +193,9 @@ def mantener_usuario():
     if opcion == '1':
         dao = UsuarioDAO()
         nombre_usuario = input('Nombre de Usuario: ')
+        if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
+            print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
+            return
         hash_password = getpass.getpass('Ingrese Contraseña: ')
         try:
             dao.crear_usuario(nombre_usuario, hash_password)
@@ -250,7 +253,7 @@ def iniciar_sesion():
     os.system('clear' if os.name != "nt" else 'cls')
     print('==== 👤 Datos de usuario ====')
     usuario = input(str('🔠 Ingrese su usuario caracteres en minusculas :')).strip().lower()
-    if usuario == '' or usuario is None or usuario == ' ' or usuario.isspace() or len(usuario) < 3 or not usuario.isalnum() or usuario.isdigit() or len(usuario) > 20:
+    if usuario == '' or usuario is None or usuario == ' ' or usuario.isspace() or len(usuario) < 3 or not usuario.isalnum() or usuario.isdigit() or len(usuario) > 10:
     # Verificar si el usuario está vacío, contiene solo espacios, o es None, verificar longitud mínima y máxima, si es alfanumérico y no solo numérico
             print('😕 ingreso un usuario invalido no cumple con los requisitos, intente nuevamente.')
             input("⌨️ Presione Enter para intentar de nuevo...")
