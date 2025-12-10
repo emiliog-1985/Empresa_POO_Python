@@ -38,6 +38,14 @@ class UsuarioDAO:
         if datos and 'nombre_usuario' in datos:
             return True
         return False
+    
+    def mostrar_usuarios_pdf(self):
+        sql = '''
+        SELECT u.nombre_usuario, e.nombre, e.apellido, e.direccion, e.telefono, e.email 
+        FROM usuario u JOIN empleado e 
+        ON u.usuario_id = e.usuario_id'''
+        return self.__conexion.listar(sql)
+
 
     def mostrar_usuarios(self):
         sql = 'SELECT usuario_id, nombre_usuario, fecha_ultimo_acceso FROM usuario'

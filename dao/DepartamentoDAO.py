@@ -1,8 +1,11 @@
 from models.Conectar import Conectar
+from models.Departamento import Departamento
 
 class DepartamentoDAO:
-    def __init__(self):
+    def __init__(self, departamento:Departamento):
         self.__conexion = Conectar()
+        self.__departamento = departamento
+        
 
     def asignar_departamento_a_usuario(self, usuario_id, departamento_id):
         sql = "UPDATE usuario SET departamento_id = %s WHERE usuario_id = %s"

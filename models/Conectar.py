@@ -5,8 +5,8 @@ class Conectar:
     def __init__(self):
         self.__conn = mysql.connector.connect(
             host='localhost',
-            user='sistemas',
-            password='sisT2025',
+            user='root',
+            password='',
             database='empresa'
         )
 # Metodo para consultar las tablas de la base de datos y probar la conexion a. Consultar
@@ -38,7 +38,7 @@ class Conectar:
         return cursor.fetchone()    
 
     def cerrar_conexion(self):
-        self.__conn.close()
+        if self.__conn is not None:
+            if self.__conn.is_connected():
+                self.__conn.close()
         
-#conexion = Conectar() # Crea el objeto conexion para usar en otros archivos
-#conexion.probar_conexion() # Prueba la conexion a la base de datos
