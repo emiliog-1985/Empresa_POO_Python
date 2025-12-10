@@ -335,60 +335,6 @@ def crear_registro_tiempo(): # Función para crear un registro de tiempo
     finally:
         if dao is not None:
             dao.cerrar_dao()
-
-def menu_departamentos(): # Función para el menú de departamentos
-    while True:
-        # Limpiar pantalla
-        os.system('clear' if os.name != "nt" else 'cls')
-        # Cargamos opciones
-        print('==== Menú de Departamentos ====')
-        print('4. Generar informe de departamentos en pdf')
-        print('0. Atrás')
-        opcion = input('Ingrese su opción:\n')
-        if opcion == '1':
-            pass
-        
-        elif opcion == '4':
-            exportar_departamentos()
-            
-        elif opcion == '0':
-            break
-        
-        else:
-            print('Debe seleccionar una opción válida')
-        
-        input('Presione enter para continuar...')
-
-def menu_empleados(): # Función para el menú de empleados
-    while True:
-        # Limpiar pantalla
-        os.system('clear' if os.name != "nt" else 'cls')
-        # Cargamos opciones
-        print('==== Menú de Empleados ====')
-        print('4. Crear registro de tiempo de trabajo')
-        print('5. Generar informe de empleados en pdf')
-        print('6. Generar informe de registro tiempo en pdf')
-        print('0. Atrás')
-        opcion = input('Ingrese su opción:\n')
-        if opcion == '1':
-            pass
-        
-        elif opcion == '4':
-            crear_registro_tiempo()
-        
-        elif opcion == '5':
-            exportar_empleados()
-            
-        elif opcion == '6':
-            exportar_registro_tiempo()
-            
-        elif opcion == '0':
-            break
-        
-        else:
-            print('Debe seleccionar una opción válida')
-            
-        input('Presione enter para continuar...')
         
 def mantener_empleado():
     #funcion para mantener empleados
@@ -526,7 +472,7 @@ def crear_departamento():
     finally:
         input('Presione enter para continuar...')
 
-def editar_departamento(): # Función para actualizar un proyecto
+def editar_departamento(): # Función para actualizar un departamento
     os.system('clear' if os.name != "nt" else 'cls')
     print('==== Editar departamento ====')
     try:
