@@ -205,9 +205,13 @@ def mantener_usuario():
         finally:
             dao.cerrar_dao()
 
+
     elif opcion == '2':
         dao = UsuarioDAO()
         nombre_usuario = input('Ingrese el Nombre de Usuario a actualizar: ')
+        if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
+            print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
+            return
         hash_password = getpass.getpass('Ingrese la nueva Contraseña: ')
         try:
             dao.actualizar_usuario(nombre_usuario, hash_password)
@@ -216,6 +220,7 @@ def mantener_usuario():
             print(f"❌ Error de base de datos: {e}")
         finally:
             dao.cerrar_dao()
+
     
     elif opcion == '3':
         print('Listado de usuarios disponibles:')
@@ -224,10 +229,15 @@ def mantener_usuario():
         for user in usuarios:
             print(f"usuario_id: {user['usuario_id']} ❯❯❯❯ Nombre de Usuario: {user['nombre_usuario']} ❯❯❯❯ Ultimo acceso: {user['fecha_ultimo_acceso']}")
         dao.cerrar_dao()
+        input("Presione Enter para volver al mantenedor de usuarios 👤 ")
+        mantener_usuario()
 
     elif opcion == '4':
         dao = UsuarioDAO()
         nombre_usuario = input('Ingrese el Nombre de Usuario a eliminar: ')
+        if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
+            print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
+            return
         print(f'⚠️ Advertencia: Está a punto de eliminar el usuario "{nombre_usuario}". Recuede haberlo eliminado de ser empleado. Esta acción es irreversible.')
         confirmacion = input(f'¿Está seguro que desea eliminar el usuario "{nombre_usuario}"? Esta acción no se puede deshacer. (s/n): ')
         if confirmacion.lower() == 's': 
