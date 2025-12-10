@@ -42,5 +42,3 @@ class Conectar:
             if self.__conn.is_connected():
                 self.__conn.close()
         
-conexion = Conectar() # Crea el objeto conexion para usar en otros archivos
-conexion.probar_conexion() # Prueba la conexion a la base de datos
