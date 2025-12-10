@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 06-12-2025 a las 23:50:29
+-- Tiempo de generación: 10-12-2025 a las 01:26:25
 -- Versión del servidor: 8.0.44-0ubuntu0.24.04.1
 -- Versión de PHP: 8.3.6
 
@@ -38,7 +38,8 @@ CREATE TABLE `departamento` (
 --
 
 INSERT INTO `departamento` (`departamento_id`, `nombre`, `ubicacion`) VALUES
-(1, 'Sistemas / TI', 'Oficina Central - Servidores');
+(1, 'Sistemas / TI', 'Oficina Central - Servidores'),
+(2, 'RR.HH', 'Departamento de recursos Humanos Empresa.LTDA');
 
 -- --------------------------------------------------------
 
@@ -73,6 +74,14 @@ CREATE TABLE `empleado` (
   `telefono` varchar(20) COLLATE utf8mb3_spanish_ci DEFAULT NULL,
   `email` varchar(100) COLLATE utf8mb3_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `empleado`
+--
+
+INSERT INTO `empleado` (`empleado_id`, `usuario_id`, `departamento_id`, `rol_id`, `codigo_empleado`, `nombre`, `apellido`, `direccion`, `telefono`, `email`) VALUES
+(1, 1, 1, 1, 'SYS-01', 'Administrador', 'Sistemas', 'localhost', '+56984710029', 'admin@localhost'),
+(2, 3, 2, 3, 'SOC-01', 'Veronica', 'Albornoz', 'Gonzalo Cerda #1481', '+56984710029', 'veronica.albornoz.gonzalez@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -121,7 +130,10 @@ CREATE TABLE `rol` (
 --
 
 INSERT INTO `rol` (`rol_id`, `nombre`, `descripcion`) VALUES
-(1, 'Administrador del Sistema', 'Acceso total a todos los módulos y configuración');
+(1, 'Administrador del Sistema', 'Acceso total a todos los módulos y configuración'),
+(2, 'Gerente Empresa', 'Puede revisar todos los proyectos'),
+(3, 'Empleado', 'Empleado de la Empresa.LTDA'),
+(4, 'Personal Externo', 'Personal contratado para proyectos temporales');
 
 -- --------------------------------------------------------
 
@@ -142,7 +154,10 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`usuario_id`, `nombre_usuario`, `hash_password`, `salt`, `fecha_ultimo_acceso`) VALUES
-(4, 'admin', 'b1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2e1e2', 'a1b2c3d4e5f60718293a4b5c6d7e8f90', NULL);
+(1, 'admin', '4972dd17041fb7868d7d7460d885f6f3b61657a780d12581bd9c9042c376baf6', '07250eb28668c24cc6742fc5331b320e', '2025-12-09 21:54:31'),
+(2, 'emilio', '86e57e84995cf147287d1062641501fa7336bb6031fb12c1e79fdc95a0553344', '5afe44884ab3ef431b2b599d4c34f399', NULL),
+(3, 'vero', '2385b8ee7b3915b9280b3133070b9df9435faa400f3261e5bb0629ca9e8975f3', '18c1bcd04137b011ef6ccfe62cac8e5b', '2025-12-09 00:44:15'),
+(12, 'pepe', '7e7b4570f8d30e445d28eb6ffcea27968d7e6ba38fe220ec71d293291a92d854', 'fc415d1634948dc704023dcdf8b3a033', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -207,7 +222,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `departamento`
 --
 ALTER TABLE `departamento`
-  MODIFY `departamento_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `departamento_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `detalleproyecto`
@@ -219,7 +234,7 @@ ALTER TABLE `detalleproyecto`
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  MODIFY `empleado_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `empleado_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto`
@@ -237,13 +252,13 @@ ALTER TABLE `registrotiempo`
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `rol_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `rol_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `usuario_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `usuario_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas
