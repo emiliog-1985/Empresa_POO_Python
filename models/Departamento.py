@@ -1,6 +1,6 @@
 class Departamento:
-    def __init__(self, departameto_id:int = None, nombre:str = None, ubicacion:str = None):
-        self.__departamento_id =  departameto_id
+    def __init__(self, departamento_id:int = None, nombre:str = None, ubicacion:str = None):
+        self.__departamento_id =  departamento_id
         self.__nombre = nombre
         self.__ubicacion = ubicacion
         
