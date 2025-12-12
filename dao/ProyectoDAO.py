@@ -56,6 +56,23 @@ class ProyectoDAO:
     def mostrar_proyectos(self):
         sql = 'SELECT * FROM proyecto'
         return self.__conexion.listar(sql)
+
+    def listar_empleados_por_proyecto(self):
+        sql = '''
+        SELECT e.empleado_id, p.proyecto_id, p.nombre_proyecto, e.nombre, e.apellido, d.fecha_asignacion, d.rol_en_proyecto, d.horas_asignadas
+        FROM detalleproyecto d 
+        JOIN empleado e ON d.empleado_id = e.empleado_id
+        JOIN proyecto p ON d.proyecto_id = p.proyecto_id'''
+        lista = self.__conexion.listar(sql)
+        for l in lista:
+            print(f'ID Empleado: {l["empleado_id"]}')
+            print(f'ID Proyecto: {l["proyecto_id"]}')
+            print(f'Nombre Proyecto: {l["nombre_proyecto"]}')
+            print(f'Nombre Empleado: {l["nombre"]} {l["apellido"]}')
+            print(f'Fecha de asignación: {l["fecha_asignacion"]}')
+            print(f'Rol en proyecto: {l["rol_en_proyecto"]}')
+            print(f'Horas asignadas: {l["horas_asignadas"]}')
+            print('-'*60)
     
     def cerrar_dao(self):
         self.__conexion.cerrar_conexion()
