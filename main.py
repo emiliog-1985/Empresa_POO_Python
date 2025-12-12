@@ -73,8 +73,9 @@ def menu_proyectos(): # Función para el menú de proyectos
         print('2. Crear proyecto')
         print('3. Editar proyecto')
         print('4. Eliminar proyecto')
-        print('5. Asignar empleado a proyecto')
-        print('6. Desasignar empleado de proyecto')
+        print('5. Listar empleados por proyecto')
+        print('6. Asignar empleado a proyecto')
+        print('7. Desasignar empleado de proyecto')
         print('0. Atrás')
         opcion = input('Seleccione una opción: \n')
         
@@ -97,9 +98,19 @@ def menu_proyectos(): # Función para el menú de proyectos
             eliminar_proyecto()
             
         elif opcion == '5':
-            asignar_proyecto()
+            os.system('clear' if os.name != "nt" else 'cls') # Limpiar pantalla
+            print('Listado de Empleados por Proyecto')
+            print('-'*60)
+            proyecto = Proyecto
+            dao = ProyectoDAO(proyecto)
+            dao.listar_empleados_por_proyecto()
+            if dao is not None:
+                dao.cerrar_dao()
         
         elif opcion == '6':
+            asignar_proyecto()
+            
+        elif opcion == '7':
             desasignar_proyecto()
         
         elif opcion == '0':
@@ -111,7 +122,33 @@ def menu_proyectos(): # Función para el menú de proyectos
         input('Presione enter para continuar...')
         
 def asignar_proyecto(): # Función para asignar un empleado a un proyecto
+    os.system('clear' if os.name != "nt" else 'cls') # Limpiar pantalla
     print('==== Asignar empleado a proyecto ====')
+    print('Lista de Proyectos')
+    print('-'*60)
+    proyecto = Proyecto
+    dao = ProyectoDAO(proyecto)
+    dao.listar_proyectos()
+    if dao is not None:
+        dao.cerrar_dao()
+    proyecto = None
+    dao = None        
+    print('Lista de Empleados')
+    print('-'*60)
+    dao = EmpleadoDAO()
+    empleados = dao.mostrar_empleados()
+    for e in empleados:
+            print(f'ID Empleado: {e["empleado_id"]}')
+            print(f'Nombre: {e["nombre"]}')
+            print(f'Apellido: {e["apellido"]}')
+            print(f'Dirección: {e["direccion"]}')
+            print(f'Teléfono: {e["telefono"]}')
+            print(f'email: {e["email"]}')
+            print('-'*60)
+    if dao is not None:
+        dao.cerrar_dao()
+    dao = None        
+    
     try:
         empleado_id = int(input('Ingrese el id de empleado: \n'))
         proyecto_id = int(input('Ingrese el id de proyecto: \n'))
@@ -149,14 +186,23 @@ def asignar_proyecto(): # Función para asignar un empleado a un proyecto
             dao.cerrar_dao()
 
 def desasignar_proyecto(): # Función para desasigar un empleado de un proyecto
+    os.system('clear' if os.name != "nt" else 'cls') # Limpiar pantalla
     print('==== Desasignar empleado de proyecto ====')
+    print('Listado de Empleados por Proyecto')
+    print('-'*60)
+    proyecto = Proyecto
+    dao = ProyectoDAO(proyecto)
+    dao.listar_empleados_por_proyecto()
+    if dao is not None:
+        dao.cerrar_dao()
+    dao = None
     try:
         empleado_id = int(input('Ingrese el id de empleado: \n'))
         proyecto_id = int(input('Ingrese el id de proyecto: \n'))
     except ValueError:
         print('Debe ingresar los id como números enteros')
         return
-    opcion = input('¿Está seguro de desasignar el empleado al proyecto?').lower()
+    opcion = input('¿Está seguro de desasignar el empleado al proyecto?\n').lower()
     if opcion == 'si':
         detalle_proyecto = DetalleProyecto(empleado_id = empleado_id, proyecto_id = proyecto_id)
         dao = DetalleProyectoDAO(detalle_proyecto)
@@ -175,6 +221,15 @@ def desasignar_proyecto(): # Función para desasigar un empleado de un proyecto
 def eliminar_proyecto(): # Función para eliminar un proyecto
     os.system('clear' if os.name != "nt" else 'cls')
     print('==== Eliminar proyecto ====')
+    print('Lista de Proyectos')
+    print('-'*60)
+    proyecto = Proyecto
+    dao = ProyectoDAO(proyecto)
+    dao.listar_proyectos()
+    if dao is not None:
+        dao.cerrar_dao()
+    proyecto = None
+    dao = None        
     try:
         proyecto_id = int(input('Ingrese el id del proyecto a eliminar: \n'))
     except ValueError:
@@ -199,6 +254,15 @@ def eliminar_proyecto(): # Función para eliminar un proyecto
 def actualizar_proyecto(): # Función para actualizar un proyecto
     os.system('clear' if os.name != "nt" else 'cls')
     print('==== Actualizar proyecto ====')
+    print('Lista de Proyectos')
+    print('-'*60)
+    proyecto = Proyecto
+    dao = ProyectoDAO(proyecto)
+    dao.listar_proyectos()
+    if dao is not None:
+        dao.cerrar_dao()
+    proyecto = None
+    dao = None        
     try:
         proyecto_id = int(input('Ingrese el id del proyecto: \n'))
     except ValueError:
@@ -299,7 +363,17 @@ def crear_proyecto(): # Función para crear un proyecto
             dao.cerrar_dao()
             
 def crear_registro_tiempo(): # Función para crear un registro de tiempo
+    os.system('clear' if os.name != "nt" else 'cls')
     print('==== Crear Registro Tiempo ====')
+    print('Listado de Empleados por Proyecto')
+    print('-'*60)
+    proyecto = Proyecto
+    dao = ProyectoDAO(proyecto)
+    dao.listar_empleados_por_proyecto()
+    if dao is not None:
+        dao.cerrar_dao()
+    dao = None
+    
     try:
         proyecto_id = int(input('Ingrese el id de proyecto: \n'))
         empleado_id = int(input('Ingrese el id de empleado:\n'))
@@ -335,69 +409,86 @@ def crear_registro_tiempo(): # Función para crear un registro de tiempo
     finally:
         if dao is not None:
             dao.cerrar_dao()
+
+def listar_empleados():
+    dao = EmpleadoDAO()
+    print('Lista de Empleados')
+    print('-'*60)
+    empleados = dao.mostrar_empleados()
+    for e in empleados:
+            print(f'ID Empleado: {e["empleado_id"]}')
+            print(f'Nombre: {e["nombre"]}')
+            print(f'Apellido: {e["apellido"]}')
+            print(f'Dirección: {e["direccion"]}')
+            print(f'Teléfono: {e["telefono"]}')
+            print(f'email: {e["email"]}')
+            print('-'*60)
+    if dao is not None:
+        dao.cerrar_dao()     
         
 def mantener_empleado():
     #funcion para mantener empleados
-    os.system('clear' if os.name != "nt" else 'cls') #limpiar pantalla 
-    print('==== Mantenedor de empleados ====')
-    print('1. 👥 Crear nuevo empleado')
-    print('2. 🔄 Actualizar empleado existente')
-    print('3. 📋 Mostrar empleados registrados')
-    print('0. 🚪 Salir')
-    
-    opcion = input('Seleccione una opción: ')
-    
-    if opcion == '1':
-        dao = EmpleadoDAO()
-        print('==== Ingrese los datos del nuevo empleado ====')
-        usuario_id = input('ID de Usuario asociado: ')
-        if usuario_id.strip() == "" or usuario_id is None:
-            print('❌ El ID de usuario no puede estar vacío.')
-            return
-        departamento_id = input('ID de Departamento: ')
-        rol_id = input('ID de Rol: ')
-        codigo_empleado = input('Codigo de empleado: ')
-        nombre = input('Nombre: ')
-        apellido = input('Apellido: ')
-        direccion = input('Direccion: ')
-        telefono = input('Telefono: ')
-        email = input('Email: ')
-        try:
-            dao.crear_empleado(usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email)
-            print('✅ Empleado registrado correctamente.')
-        except mysql.connector.Error as e:
-            print(f"❌ Error de base de datos: {e}")
-        finally:
-            dao.cerrar_dao()
+    while True:
+        os.system('clear' if os.name != "nt" else 'cls') #limpiar pantalla 
+        print('==== Mantenedor de empleados ====')
+        print('1. 👥 Crear nuevo empleado')
+        print('2. 🔄 Actualizar empleado existente')
+        print('3. 📋 Mostrar empleados registrados')
+        print('0. 🚪 Salir')
+        
+        opcion = input('Seleccione una opción: ')
+        
+        if opcion == '1':
+            dao = EmpleadoDAO()
+            os.system('clear' if os.name != "nt" else 'cls')
+            print('==== Ingrese los datos del nuevo empleado ====')
+            usuario_id = input('ID de Usuario asociado: ')
+            if usuario_id.strip() == "" or usuario_id is None:
+                print('❌ El ID de usuario no puede estar vacío.')
+                return
+            departamento_id = input('ID de Departamento: ')
+            rol_id = input('ID de Rol: ')
+            codigo_empleado = input('Codigo de empleado: ')
+            nombre = input('Nombre: ')
+            apellido = input('Apellido: ')
+            direccion = input('Direccion: ')
+            telefono = input('Telefono: ')
+            email = input('Email: ')
+            try:
+                dao.crear_empleado(usuario_id, departamento_id, rol_id, codigo_empleado,nombre, apellido, direccion, telefono,email)
+                print('✅ Empleado registrado correctamente.')
+            except mysql.connector.Error as e:
+                print(f"❌ Error de base de datos: {e}")
+            finally:
+                dao.cerrar_dao()
 
-    elif opcion == '2':
-        dao = EmpleadoDAO()
-        empleado_id = input('Ingrese el ID del empleado a actualizar: ')
-        nombre = input('Ingrese el nuevo nombre del empleado: ')
-        apellido = input('Ingrese el nuevo apellido del empleado: ')
-        direccion = input('Ingrese la nueva direccion del empleado: ')
-        telefono = input('Ingrese el nuevo telefono del empleado: ')
-        email = input('Ingrese el nuevo email del empleado: ')
-        try:
-            dao.actualizar_empleado(empleado_id, nombre, apellido, direccion, telefono, email)
-            print('✅ Empleado actualizado correctamente.')
-        except mysql.connector.Error as e:
-            print(f"❌ Error de base de datos: {e}")
-        finally:
-            dao.cerrar_dao()
+        elif opcion == '2':
+            os.system('clear' if os.name != "nt" else 'cls')
+            print('==== Actualizar empleado ====')
+            listar_empleados()  
+            empleado_id = input('Ingrese el ID del empleado a actualizar: ')
+            nombre = input('Ingrese el nuevo nombre del empleado: ')
+            apellido = input('Ingrese el nuevo apellido del empleado: ')
+            direccion = input('Ingrese la nueva direccion del empleado: ')
+            telefono = input('Ingrese el nuevo telefono del empleado: ')
+            email = input('Ingrese el nuevo email del empleado: ')
+            try:
+                dao.actualizar_empleado(empleado_id, nombre, apellido, direccion, telefono, email)
+                print('✅ Empleado actualizado correctamente.')
+            except mysql.connector.Error as e:
+                print(f"❌ Error de base de datos: {e}")
+            finally:
+                dao.cerrar_dao()
 
-    elif opcion == '3':
-        dao = EmpleadoDAO()
-        empleados = dao.mostrar_empleados()
-        print('Listado de empleados registrados:')
-        for emp in empleados:
-            print(f"empleado_id: {emp['empleado_id']}, Nombre: {emp['nombre']}, Apellido: {emp['apellido']}, Direccion: {emp['direccion']}, Telefono: {emp['telefono']}, Email: {emp['email']}")
-        dao.cerrar_dao()
-
-    elif opcion == '0':
-        print('Saliendo del mantenedor de empleados...')
-    else:
-        print('Opcion no valida')
+        elif opcion == '3':
+            os.system('clear' if os.name != "nt" else 'cls')
+            listar_empleados()
+        elif opcion == '0':
+            print('Saliendo del mantenedor de empleados...')
+            break
+        else:
+            print('Opcion no valida')
+            
         input("⌨️ Presione Enter para continuar...") 
 
 def mantener_rol():
@@ -472,9 +563,25 @@ def crear_departamento():
     finally:
         input('Presione enter para continuar...')
 
+def listar_departamentos():
+    d = Departamento
+    dao = DepartamentoDAO(d)
+    print('Lista de Departamentos')
+    print('-'*60)
+    departamentos = dao.mostrar_departamentos()
+    for d in departamentos:
+        print(f'ID Departamento: {d["departamento_id"]}')
+        print(f'Nombre: {d["nombre"]}')
+        print(f'Ubicación: {d["ubicacion"]}')
+        print('-'*60)
+    if dao is not None:
+        dao.cerrar_dao()
+
 def editar_departamento(): # Función para actualizar un departamento
-    os.system('clear' if os.name != "nt" else 'cls')
     print('==== Editar departamento ====')
+    os.system('clear' if os.name != "nt" else 'cls')
+    listar_departamentos()
+
     try:
         departamento_id = int(input('Ingrese el id del departamento: \n'))
     except ValueError:
@@ -518,18 +625,32 @@ def buscar_departamento():
     except ValueError as e:
         print ("Solo se puede ingresar numeros...")
         return
-    departamento = Departamento(departamento_id=departamento_id)
-    dao = DepartamentoDAO(departamento)
-    dao.buscar_departamento()
-    if dao is not None:
-        dao.cerrar_dao()
+    try:
+        departamento = Departamento(departamento_id=departamento_id)
+    except ValueError as e:
+        # Aquí llegan las validaciones de Departamento
+        print(f"Error en datos: {e}")
+        return
+    dao = None
+    try:
+        dao = DepartamentoDAO(departamento)
+        dao.buscar_departamento()
+    except mysql.connector.Error as e:
+        # Excepción específica de mysql.connector
+        print(f"Error de base de datos al buscar departamento: {e}")
+    except Exception as e:
+        # Cualquier otro error INESPERADO
+        print(f"Error inesperado al buscar departamento: {e}")
+    finally:
+        if dao is not None:
+            dao.cerrar_dao()
 
 def eliminar_departamento():
     os.system('clear' if os.name != "nt" else 'cls')
     print("=== Eliminar Departamento ===\n")
-
+    listar_departamentos()
     try:
-        departamento_id = input("Ingrese ID del departamento: ").strip()
+        departamento_id = input("Ingrese ID del departamento a eliminar: ").strip()
 
         if not departamento_id:
             print("Debe ingresar un ID")
@@ -552,45 +673,44 @@ def eliminar_departamento():
         print(f"Error inesperado: {e}")
 
     finally:
-        input("Presione enter para continuar...")
+        dao.cerrar_dao()
 
 def mantener_departamentos():
-    #funcion para agregar y asignar departamentos a usuarios
-    print('==== Mantenedor de departamentos ====')
-    print('1. Registrar nuevo departamento')
-    print('2. Actualizar departamento existente')
-    print('3. Buscar departamento')
-    print('4. Mostrar departamentos disponibles')
-    print('5. Eliminar departamento')
-    print('0. Salir')
-    opcion = input('Seleccione una opción: ')
-    if opcion == '1':
-        crear_departamento()
-        
-    elif opcion == '2':
-        editar_departamento()
-    
-    elif opcion == '3':
-        buscar_departamento()
-        
-    elif opcion == '4':
-        print('Listado de departamentos disponibles:')
-        departamento = Departamento
-        dao = DepartamentoDAO(departamento)
-        departamentos = dao.mostrar_departamentos()
-        for dept in departamentos:
-            print(f"departamento_id: {dept['departamento_id']}, Nombre: {dept['nombre']}, Ubicacion: {dept['ubicacion']}")
-            dao.cerrar_dao()
+    while True:
+        os.system('clear' if os.name != "nt" else 'cls')
+        #funcion para agregar y asignar departamentos a usuarios
+        print('==== Mantenedor de Departamentos ====')
+        print('1. Registrar nuevo departamento')
+        print('2. Actualizar departamento existente')
+        print('3. Buscar departamento')
+        print('4. Mostrar departamentos disponibles')
+        print('5. Eliminar departamento')
+        print('0. Salir')
+        opcion = input('Seleccione una opción: ')
+        if opcion == '1':
+            crear_departamento()
             
-    elif opcion == '5':
-        eliminar_departamento()
-    
-    elif opcion == '0':
-        print('Saliendo del mantenedor de departamentos...')
+        elif opcion == '2':
+            editar_departamento()
         
-    else:
-        print('Opcion no valida')
-        input("⌨️ Presione Enter para continuar...")
+        elif opcion == '3':
+            buscar_departamento()
+            
+        elif opcion == '4':
+            os.system('clear' if os.name != "nt" else 'cls')
+            listar_departamentos()
+                
+        elif opcion == '5':
+            eliminar_departamento()
+        
+        elif opcion == '0':
+            print('Saliendo del mantenedor de departamentos...')
+            break
+            
+        else:
+            print('Opcion no valida')
+            
+        input('Presione Enter para continuar...')
 
 def marcar_fecha_actual():
     #funcion para obtener la fecha y hora actual
@@ -607,81 +727,103 @@ def revisar_usuario_existente(nombre_usuario):
 
 def mantener_usuario():
     #funcion para crear un nuevo usuario
-    os.system('clear' if os.name != "nt" else 'cls')
-    print('==== Mantenedor de usuario ====')
-    print('1. 👤 Registrar nuevo usuario')
-    print('2. 🔄 Actualizar contraseña de usuario existente')
-    print('3. 📋 Mostrar usuarios disponibles')
-    print('4. 🗑️  Eliminar usuario existente')
-    print('0. 🚪 Salir')
-    opcion = input('Seleccione una opción: ')
+    while True:
+        os.system('clear' if os.name != "nt" else 'cls')
+        print('==== Mantenedor de usuario ====')
+        print('1. 👤 Registrar nuevo usuario')
+        print('2. 🔄 Actualizar contraseña de usuario existente')
+        print('3. 📋 Mostrar usuarios disponibles')
+        print('4. 🗑️  Eliminar usuario existente')
+        print('0. 🚪 Salir')
+        opcion = input('Seleccione una opción: ')
 
-    if opcion == '1':
-        dao = UsuarioDAO()
-        nombre_usuario = input('Nombre de Usuario: ')
-        if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
-            print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
-            return
-        hash_password = getpass.getpass('Ingrese Contraseña: ')
-        try:
-            dao.crear_usuario(nombre_usuario, hash_password)
-            print('✅ Usuario registrado correctamente.')
-        except mysql.connector.Error as e:
-            print(f"❌ Error de base de datos: {e}")
-        finally:
-            dao.cerrar_dao()
-
-
-    elif opcion == '2':
-        dao = UsuarioDAO()
-        nombre_usuario = input('Ingrese el Nombre de Usuario a actualizar: ')
-        if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
-            print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
-            return
-        hash_password = getpass.getpass('Ingrese la nueva Contraseña: ')
-        try:
-            dao.actualizar_usuario(nombre_usuario, hash_password)
-            print('✅ Usuario actualizado correctamente.')
-        except mysql.connector.Error as e:
-            print(f"❌ Error de base de datos: {e}")
-        finally:
-            dao.cerrar_dao()
-
-    
-    elif opcion == '3':
-        print('Listado de usuarios disponibles:')
-        dao = UsuarioDAO()
-        usuarios = dao.mostrar_usuarios()
-        for user in usuarios:
-            print(f"usuario_id: {user['usuario_id']} ❯❯❯❯ Nombre de Usuario: {user['nombre_usuario']} ❯❯❯❯ Ultimo acceso: {user['fecha_ultimo_acceso']}")
-        dao.cerrar_dao()
-        input("Presione Enter para volver al mantenedor de usuarios 👤 ")
-        mantener_usuario()
-
-    elif opcion == '4':
-        dao = UsuarioDAO()
-        nombre_usuario = input('Ingrese el Nombre de Usuario a eliminar: ')
-        if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
-            print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
-            return
-        print(f'⚠️ Advertencia: Está a punto de eliminar el usuario "{nombre_usuario}". Recuede haberlo eliminado de ser empleado. Esta acción es irreversible.')
-        confirmacion = input(f'¿Está seguro que desea eliminar el usuario "{nombre_usuario}"? Esta acción no se puede deshacer. (s/n): ')
-        if confirmacion.lower() == 's': 
+        if opcion == '1':
+            os.system('clear' if os.name != "nt" else 'cls')
+            dao = UsuarioDAO()
+            nombre_usuario = input('Nombre de Usuario: ')
+            if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
+                print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
+                return
+            hash_password = getpass.getpass('Ingrese Contraseña: ')
             try:
-                dao.eliminar_usuario(nombre_usuario)
-                print('✅ Usuario eliminado correctamente.')
+                dao.crear_usuario(nombre_usuario, hash_password)
+                print('✅ Usuario registrado correctamente.')
             except mysql.connector.Error as e:
                 print(f"❌ Error de base de datos: {e}")
             finally:
                 dao.cerrar_dao()
-        else:
-            print('Operación de eliminación cancelada.')    
 
-    elif opcion == '0':
-        print('Saliendo del mantenedor de usuarios...')
-    else:
-        print('Opcion no valida')
+
+        elif opcion == '2':
+            os.system('clear' if os.name != "nt" else 'cls')
+            listar_usuarios()
+            dao = None
+            dao = UsuarioDAO()
+            nombre_usuario = input('Ingrese el Nombre de Usuario a actualizar: ')
+            if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
+                print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
+                return
+            hash_password = getpass.getpass('Ingrese la nueva Contraseña: ')
+            try:
+                dao.actualizar_usuario(nombre_usuario, hash_password)
+                print('✅ Usuario actualizado correctamente.')
+            except mysql.connector.Error as e:
+                print(f"❌ Error de base de datos: {e}")
+            finally:
+                dao.cerrar_dao()
+
+        
+        elif opcion == '3':
+            os.system('clear' if os.name != "nt" else 'cls')
+            print('Listado de usuarios disponibles:')
+            listar_usuarios()
+
+
+        elif opcion == '4':
+            os.system('clear' if os.name != "nt" else 'cls')
+            listar_usuarios()
+            dao = None
+            dao = UsuarioDAO()
+            nombre_usuario = input('Ingrese el Nombre de Usuario a eliminar: ')
+            if nombre_usuario.strip() == "" or nombre_usuario is None or nombre_usuario.isspace() or len(nombre_usuario) <3 or not nombre_usuario.isalnum() or nombre_usuario.isdigit() or len(nombre_usuario) >10:
+                print('❌ No cumple con los requisitos minimos para el usuario. Intente nuevamente.')
+                return
+            print(f'⚠️ Advertencia: Está a punto de eliminar el usuario "{nombre_usuario}". Recuede haberlo eliminado de ser empleado. Esta acción es irreversible.')
+            confirmacion = input(f'¿Está seguro que desea eliminar el usuario "{nombre_usuario}"? Esta acción no se puede deshacer. (s/n): ')
+            if confirmacion.lower() == 's': 
+                try:
+                    dao.eliminar_usuario(nombre_usuario)
+                    print('✅ Usuario eliminado correctamente.')
+                except mysql.connector.Error as e:
+                    print(f"❌ Error de base de datos: {e}")
+                finally:
+                    dao.cerrar_dao()
+            else:
+                print('Operación de eliminación cancelada.')    
+
+        elif opcion == '0':
+            print('Saliendo del mantenedor de usuarios...')
+            break
+        else:
+            print('Opcion no valida')
+            
         input("⌨️ Presione Enter para continuar...")
+
+def listar_usuarios():
+    dao = UsuarioDAO()
+    print('Lista de Usuarios')
+    print('-'*60)
+    usuarios = dao.mostrar_usuarios()
+    for u in usuarios:
+            print(f'ID Usuario: {u["usuario_id"]}')
+            print(f'Nombre Usuario: {u["nombre_usuario"]}')
+            if u["fecha_ultimo_acceso"] == None:
+                print(f'Fecha último acceso: ')
+            else:
+                print(f'Fecha último acceso: {u["fecha_ultimo_acceso"]}')
+            print('-'*60)
+    if dao is not None:
+        dao.cerrar_dao()
 
 def menu_exportar():
     while True:
@@ -713,7 +855,7 @@ def iniciar_sesion():
         #funcion para iniciar sesion
         os.system('clear' if os.name != "nt" else 'cls')
         print('==== 👤 Datos de usuario ====')
-        usuario = input(str('🔠 Ingrese su usuario caracteres en minusculas :')).strip().lower()
+        usuario = input(str('🔠 Ingrese su usuario caracteres en minusculas: \n')).strip().lower()
         if usuario == '' or usuario is None or usuario == ' ' or usuario.isspace() or len(usuario) < 3 or not usuario.isalnum() or usuario.isdigit() or len(usuario) > 10:
         # Verificar si el usuario está vacío, contiene solo espacios, o es None, verificar longitud mínima y máxima, si es alfanumérico y no solo numérico
             print('😕 ingreso un usuario invalido no cumple con los requisitos, intente nuevamente.')
@@ -726,7 +868,7 @@ def iniciar_sesion():
                 iniciar_sesion()
                 return
 
-        hash_password = getpass.getpass('🔑 Ingrese su contraseña: ').strip()
+        hash_password = getpass.getpass('🔑 Ingrese su contraseña:\n').strip()
 
         try:
             usuario = Usuario(usuario_id=usuario, hash_password=hash_password)
@@ -824,6 +966,7 @@ def menu_principal(usuario: Usuario):
         elif opcion == '0':
             print(f'Hasta luego {usuario.nombre}')
             usuario = None
+            menu_inicio_sesion()
             break
         
         input('Presione enter para continuar...')
@@ -849,6 +992,7 @@ def menu_inicio_sesion():
             print('======👋 ¡Hasta luego! ======')
             print('==Saliendo del sistema...====')
             print('=============================')
+            quit()
             break     
         input(' ↳ presione intro para continuar...')
     
@@ -860,4 +1004,3 @@ if __name__ == "__main__":
         print('👋 ¡Hasta luego!')
     except Exception as e:
         print(f'\n\n❌ Error inesperado: {e}')   
-
