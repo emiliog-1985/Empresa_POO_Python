@@ -27,9 +27,12 @@ class Conectar:
             return True
         return False
 # Metodo para listar resultados de consultas SQL (SELECT)
-    def listar(self, sql:str):
+    def listar(self, sql:str, datos=None):
         cursor = self.__conn.cursor(dictionary=True)
-        cursor.execute(sql)
+        if datos:
+            cursor.execute(sql, datos)
+        else:
+            cursor.execute(sql)
         return cursor.fetchall()
 # Metodo para listar un solo resultado de consultas SQL (SELECT)    
     def listar_uno(self, sql:str, datos=None):
