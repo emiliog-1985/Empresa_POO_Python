@@ -1,4 +1,3 @@
-import mysql.connector
 from models.Conectar import Conectar
 from models.UsuarioEmpleado import Usuario
 
