@@ -15,6 +15,7 @@ from dao.DetalleProyectoDAO import DetalleProyectoDAO
 from models.Departamento import Departamento
 from dao.DepartamentoDAO import DepartamentoDAO
 from dao.RolDAO import RolDAO
+from models.UsuarioEmpleado import Empleado
 from dao.EmpleadoDAO import EmpleadoDAO
 
 
@@ -434,6 +435,7 @@ def mantener_empleado():
         print('1. 👥 Crear nuevo empleado')
         print('2. 🔄 Actualizar empleado existente')
         print('3. 📋 Mostrar empleados registrados')
+        print('4. Asignar empleados a departamentos')
         print('0. 🚪 Salir')
         
         opcion = input('Seleccione una opción: ')
@@ -442,11 +444,14 @@ def mantener_empleado():
             dao = EmpleadoDAO()
             os.system('clear' if os.name != "nt" else 'cls')
             print('==== Ingrese los datos del nuevo empleado ====')
+            listar_usuarios()
             usuario_id = input('ID de Usuario asociado: ')
             if usuario_id.strip() == "" or usuario_id is None:
                 print('❌ El ID de usuario no puede estar vacío.')
                 return
+            listar_departamentos()
             departamento_id = input('ID de Departamento: ')
+            listar_roles()
             rol_id = input('ID de Rol: ')
             codigo_empleado = input('Codigo de empleado: ')
             nombre = input('Nombre: ')
@@ -483,6 +488,10 @@ def mantener_empleado():
         elif opcion == '3':
             os.system('clear' if os.name != "nt" else 'cls')
             listar_empleados()
+            
+        elif opcion == '4':
+            asignar_empleado_departamento()
+            
         elif opcion == '0':
             print('Saliendo del mantenedor de empleados...')
             break
@@ -490,6 +499,19 @@ def mantener_empleado():
             print('Opcion no valida')
             
         input("⌨️ Presione Enter para continuar...") 
+
+def listar_roles():
+    dao = RolDAO()
+    print('Lista de Roles')
+    print('-'*60)
+    roles = dao.mostrar_roles()
+    for r in roles:
+            print(f'ID Rol: {r["rol_id"]}')
+            print(f'Nombre: {r["nombre"]}')
+            print(f'Descripción: {r["descripcion"]}')
+            print('-'*60)
+    if dao is not None:
+        dao.cerrar_dao()
 
 def mantener_rol():
     #funcion para mantener roles
@@ -501,6 +523,7 @@ def mantener_rol():
     print('0. 🚪 Salir')
     opcion = input('Seleccione una opción: ')
     if opcion == '1':
+        os.system('clear' if os.name != "nt" else 'cls') #limpiar pantalla 
         dao = RolDAO()
         nombre = input('Ingrese el nombre del rol: ')
         descripcion = input('Ingrese la descripcion del rol: ')
@@ -512,6 +535,9 @@ def mantener_rol():
         finally:
             dao.cerrar_dao()
     elif opcion == '2':
+        os.system('clear' if os.name != "nt" else 'cls') #limpiar pantalla 
+        listar_roles()
+        dao = None
         dao = RolDAO()
         rol_id = input('Ingrese el ID del rol a actualizar: ')
         nombre = input('Ingrese el nuevo nombre del rol: ')
@@ -524,12 +550,9 @@ def mantener_rol():
         finally:
             dao.cerrar_dao()
     elif opcion == '3':
-        print('Listado de roles disponibles:')
-        dao = RolDAO()
-        roles = dao.mostrar_roles()
-        for rol in roles:
-            print(f"rol_id: {rol['rol_id']}, Nombre: {rol['nombre']}, Descripcion: {rol['descripcion']}")
-        dao.cerrar_dao()
+        os.system('clear' if os.name != "nt" else 'cls') #limpiar pantalla 
+        listar_roles()
+        dao = None
 
     elif opcion == '0':
         print('Saliendo del mantenedor de roles...')
@@ -646,6 +669,7 @@ def buscar_departamento():
             dao.cerrar_dao()
 
 def eliminar_departamento():
+
     os.system('clear' if os.name != "nt" else 'cls')
     print("=== Eliminar Departamento ===\n")
     listar_departamentos()
@@ -675,6 +699,115 @@ def eliminar_departamento():
     finally:
         dao.cerrar_dao()
 
+def asignar_empleado_departamento():
+    os.system('clear' if os.name != "nt" else 'cls')
+    print("=== Asignar Empleado a Departamento ===\n")
+    
+    try:
+        print("LISTA DE EMPLEADOS:\n")
+
+        emp_dao = EmpleadoDAO()
+        empleados = emp_dao.listar_empleados2()
+        
+        if not empleados:
+            print("No hay empleados registrados.")
+            emp_dao.cerrar_dao()
+            return
+        
+        for emp in empleados:
+            depto_id = emp['departamento_id']
+            depto_texto = str(depto_id) if depto_id else "Sin asignar"
+            print(f"ID: {emp['empleado_id']} | {emp['nombre']} {emp['apellido']} | Depto: {depto_texto}")
+        
+        print("\n" + "-" * 60)
+        
+        try:
+            empleado_id = int(input("\nIngrese ID del empleado a asignar: "))
+        except ValueError:
+            print("Error: Debe ingresar un número válido.")
+            emp_dao.cerrar_dao()
+            return
+        
+        empleado_info = emp_dao.obtener_empleado(empleado_id)
+        if not empleado_info:
+            print(f"Error: No existe empleado con ID {empleado_id}")
+            emp_dao.cerrar_dao()
+
+            return
+        
+        emp_dao.cerrar_dao()
+        
+        print("\nLISTA DE DEPARTAMENTOS:\n")
+        
+        depto_obj = Departamento() 
+        depto_dao = DepartamentoDAO(depto_obj)
+        
+        departamentos = depto_dao.mostrar_departamentos()
+        
+        if not departamentos:
+            print("No hay departamentos registrados.")
+            depto_dao.cerrar_dao()
+            return
+        
+        for depto in departamentos:
+            print(f"ID: {depto['departamento_id']} | {depto['nombre']} | Ubicación: {depto['ubicacion']}")
+        
+        print("\n" + "-" * 60)
+        
+        try:
+            nuevo_departamento_id = int(input("\nIngrese ID del nuevo departamento: "))
+        except ValueError:
+            print("Error: Debe ingresar un número válido.")
+            depto_dao.cerrar_dao()
+            return
+        
+        depto_existe = False
+        nombre_departamento = ""
+        for depto in departamentos:
+            if depto['departamento_id'] == nuevo_departamento_id:
+                depto_existe = True
+                nombre_departamento = depto['nombre']
+                break
+        
+        if not depto_existe:
+            print(f"Error: No existe departamento con ID {nuevo_departamento_id}")
+            depto_dao.cerrar_dao()
+            return
+        
+        depto_dao.cerrar_dao()
+        
+        print(f"\nRESUMEN DE ASIGNACIÓN:")
+        print(f"   Empleado: {empleado_info['nombre']} {empleado_info['apellido']}")
+        print(f"   ID Empleado: {empleado_id}")
+        print(f"   Depto actual: {empleado_info['departamento_id'] or 'Sin asignar'}")
+        print(f"   Nuevo departamento: {nombre_departamento} (ID: {nuevo_departamento_id})")
+        
+        print("\n" + "=" * 60)
+        confirmar = input("¿Confirmar asignación? (s/n): ").strip().lower()
+        
+        if confirmar != 's':
+            print("Operación cancelada.")
+            return
+        
+        empleado_obj = Empleado(id=empleado_id)
+        emp_dao_final = EmpleadoDAO(empleado_obj)
+        
+        try:
+            if emp_dao_final.asignar_departamento(nuevo_departamento_id):
+                print(f"\n asignación exitosa")
+                print(f"   {empleado_info['nombre']} {empleado_info['apellido']} ahora está en {nombre_departamento}")
+            else:
+                print("Error en la asignación")
+        except RuntimeError as e:
+            print(f"Error: {e}")
+        finally:
+            emp_dao_final.cerrar_dao()
+        
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+        import traceback
+        traceback.print_exc()  
+
 def mantener_departamentos():
     while True:
         os.system('clear' if os.name != "nt" else 'cls')
@@ -685,6 +818,7 @@ def mantener_departamentos():
         print('3. Buscar departamento')
         print('4. Mostrar departamentos disponibles')
         print('5. Eliminar departamento')
+        print('6. Asignar empleados a departamentos')
         print('0. Salir')
         opcion = input('Seleccione una opción: ')
         if opcion == '1':
@@ -702,6 +836,9 @@ def mantener_departamentos():
                 
         elif opcion == '5':
             eliminar_departamento()
+            
+        elif opcion == '6':
+            asignar_empleado_departamento()
         
         elif opcion == '0':
             print('Saliendo del mantenedor de departamentos...')
@@ -1004,3 +1141,4 @@ if __name__ == "__main__":
         print('👋 ¡Hasta luego!')
     except Exception as e:
         print(f'\n\n❌ Error inesperado: {e}')   
+
