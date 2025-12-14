@@ -444,11 +444,14 @@ def mantener_empleado():
             dao = EmpleadoDAO()
             os.system('clear' if os.name != "nt" else 'cls')
             print('==== Ingrese los datos del nuevo empleado ====')
+            listar_usuarios()
             usuario_id = input('ID de Usuario asociado: ')
             if usuario_id.strip() == "" or usuario_id is None:
                 print('❌ El ID de usuario no puede estar vacío.')
                 return
+            listar_departamentos()
             departamento_id = input('ID de Departamento: ')
+            listar_roles()
             rol_id = input('ID de Rol: ')
             codigo_empleado = input('Codigo de empleado: ')
             nombre = input('Nombre: ')
