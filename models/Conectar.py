@@ -5,8 +5,8 @@ class Conectar:
     def __init__(self):
         self.__conn = mysql.connector.connect(
             host='localhost',
-            user='sistemas',
-            password='sisT2025',
+            user='root',
+            password='',
             database='empresa'
         )
 # Metodo para consultar las tablas de la base de datos y probar la conexion a. Consultar
@@ -27,9 +27,12 @@ class Conectar:
             return True
         return False
 # Metodo para listar resultados de consultas SQL (SELECT)
-    def listar(self, sql:str):
+    def listar(self, sql:str, datos=None):
         cursor = self.__conn.cursor(dictionary=True)
-        cursor.execute(sql)
+        if datos:
+            cursor.execute(sql, datos)
+        else:
+            cursor.execute(sql)
         return cursor.fetchall()
 # Metodo para listar un solo resultado de consultas SQL (SELECT)    
     def listar_uno(self, sql:str, datos=None):
@@ -42,5 +45,4 @@ class Conectar:
             if self.__conn.is_connected():
                 self.__conn.close()
         
-conexion = Conectar() # Crea el objeto conexion para usar en otros archivos
-conexion.probar_conexion() # Prueba la conexion a la base de datos
+
